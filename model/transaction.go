@@ -1,0 +1,21 @@
+package model
+
+type Transaction struct {
+	ID        int    `json:"id"`
+	UserId    int    `json:"userId"`
+	ProductId int    `json:"ProductId"`
+	Date      string `json:"date"`
+	Quantity  int    `json:"qty"`
+}
+
+type TransactionsResponse struct {
+	Status  int           `json:"status"`
+	Message string        `json:"message"`
+	Data    []Transaction `json:"data,omitempty"`
+}
+
+type TransactionResponse struct {
+	Status  int         `json:"status"`
+	Message string      `json:"message"`
+	Data    Transaction `json:"data,omitempty"`
+}
