@@ -13,7 +13,7 @@ type CartsResponse struct {
 	Data    []Cart `json:"data,omitempty"`
 }
 
-type CaerResponse struct {
+type CartResponse struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`
 	Data    Cart   `json:"data,omitempty"`

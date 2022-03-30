@@ -12,24 +12,42 @@ func main() {
 	//1. User Biasa 2. Memiliki Toko 3. Admin
 	router.POST("/login", controller.UserLogin)
 	router.GET("/logout", controller.Logout)
+	router.POST("/register", controller.InsertUser)
 
 	admin := router.Group("/")
 	admin.Use(controller.Authenticate(3))
 	{
-		router.DELETE("/users/:id", controller.DeleteUser)
+		admin.DELETE("/users/:id", controller.DeleteUser)
 	}
 
 	basicUser := router.Group("/")
 	basicUser.Use(controller.Authenticate(1))
 	{
+		basicUser.PUT("/user", controller.UpdateUsers)
+		basicUser.POST("/store", controller.InsertMyStore)
 
-		router.PUT("/users", controller.UpdateUsers)
+		basicUser.GET("/carts", controller.GetAllMyCart)
+		basicUser.DELETE("/cart/:cartId", controller.DeleteMyCart)
+		basicUser.POST("/cart", controller.InsertMyCart)
+		basicUser.PUT("/cart/:cartId", controller.UpdateMyChart)
 	}
 
-	//User
+	storeOwner := router.Group("/")
+	storeOwner.Use(controller.Authenticate(2))
+	{
+		//Store
+		storeOwner.DELETE("/store", controller.DeleteMyStore)
+		storeOwner.PUT("/store", controller.UpdateMyStore)
+
+		//Products
+		storeOwner.DELETE("/product/:productId", controller.DeleteMyProduct)
+		storeOwner.POST("/product", controller.InsertMyProduct)
+		storeOwner.PUT("/product/:productId", controller.UpdateMyProduct)
+	}
+
 	router.GET("/users", controller.GetAllUsers)
-	router.POST("/users", controller.InsertUser)
+	router.GET("/stores", controller.GetAllStores)
+	router.GET("/products", controller.GetAllProducts)
 
 	router.Run(":8080")
-
 }

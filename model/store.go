@@ -2,7 +2,7 @@ package model
 
 type Store struct {
 	ID      int    `json:"id"`
-	UserId  int    `json:"userId"`
+	UserId  int    `json:"userId,omitempty"`
 	Name    string `json:"name"`
 	Address string `json:"address"`
 }

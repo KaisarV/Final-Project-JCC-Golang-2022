@@ -60,7 +60,7 @@ func validateUserToken(c *gin.Context, accessType int) bool {
 	fmt.Print(id, name, userType, accessType, isAccessTokenValid)
 
 	if isAccessTokenValid {
-		isUserValid := userType == accessType
+		isUserValid := userType >= accessType
 		fmt.Print(isUserValid)
 		if isUserValid {
 			return true

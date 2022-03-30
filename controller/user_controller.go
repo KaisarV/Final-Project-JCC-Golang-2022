@@ -15,7 +15,7 @@ func GetAllUsers(c *gin.Context) {
 	var response model.UsersResponse
 	defer db.Close()
 
-	query := "SELECT Id, Name, Phone, Email, Password,  Address, User_Type FROM users"
+	query := "SELECT Id, Name, Phone, Email,  Address, User_Type FROM users"
 	id := c.Query("id")
 	if id != "" {
 		query += " WHERE id = " + id
