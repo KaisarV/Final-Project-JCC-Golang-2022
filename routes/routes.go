@@ -43,6 +43,7 @@ func SetupRouter() *gin.Engine {
 		basicUser.GET("/reviews", controller.GetAllMyProductReviews)
 		basicUser.DELETE("/review/:productid", controller.DeleteMyProductReview)
 		basicUser.POST("/review/:productid", controller.InsertMyProductReview)
+		basicUser.PUT("/review/:productid", controller.UpdateMyProductReview)
 	}
 
 	storeOwner := router.Group("/")

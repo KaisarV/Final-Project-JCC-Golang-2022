@@ -31,7 +31,7 @@ func GetAllMyProductReviews(c *gin.Context) {
 	var reviews []model.ProductReview
 
 	for rows.Next() {
-		if err := rows.Scan(&review.ID, &review.UserId, &review.ProductId, &review.Review, review.Rating, review.Date); err != nil {
+		if err := rows.Scan(&review.ID, &review.UserId, &review.ProductId, &review.Review, &review.Rating, &review.Date); err != nil {
 			log.Println(err.Error())
 		} else {
 			reviews = append(reviews, review)
@@ -114,8 +114,39 @@ func InsertMyProductReview(c *gin.Context) {
 		return
 	}
 
+	rows, err = db.Query("SELECT * FROM product_reviews WHERE User_Id = ? AND Product_Id = ?", userId, productId)
+
+	if err != nil {
+		response.Status = 400
+		response.Message = err.Error()
+		c.Header("Content-Type", "application/json")
+		c.JSON(response.Status, response)
+		return
+	}
+
+	i = 0
+	for rows.Next() {
+		i++
+	}
+
+	if i != 0 {
+		response.Status = 400
+		response.Message = "you already review this product"
+		c.Header("Content-Type", "application/json")
+		c.JSON(response.Status, response)
+		return
+	}
+
 	review.Review = c.PostForm("review")
 	review.Rating, _ = strconv.Atoi(c.PostForm("rating"))
+
+	if review.Rating > 5 {
+		response.Status = 400
+		response.Message = "rating can't be more than 5"
+		c.Header("Content-Type", "application/json")
+		c.JSON(response.Status, response)
+		return
+	}
 
 	if review.Review == "" {
 		response.Status = 400
@@ -127,7 +158,7 @@ func InsertMyProductReview(c *gin.Context) {
 
 	if review.Rating == 0 {
 		response.Status = 400
-		response.Message = "Please product's rating"
+		response.Message = "Please insert product's rating"
 		c.Header("Content-Type", "application/json")
 		c.JSON(response.Status, response)
 		return
@@ -152,73 +183,53 @@ func InsertMyProductReview(c *gin.Context) {
 
 }
 
-// func UpdateMyStore(c *gin.Context) {
-// 	db := connect()
+func UpdateMyProductReview(c *gin.Context) {
+	db := connect()
 
-// 	var store model.Store
-// 	var response model.StoreResponse
+	var review model.ProductReview
+	var response model.ProductReviewResponse
+	_, userId, _, _ := validateTokenFromCookies(c)
+	productId := c.Param("productid")
 
-// 	_, userId, _, _ := validateTokenFromCookies(c)
-// 	store.Name = c.PostForm("name")
-// 	store.Address = c.PostForm("address")
+	review.Review = c.PostForm("review")
+	review.Rating, _ = strconv.Atoi(c.PostForm("rating"))
 
-// 	rows, _ := db.Query("SELECT * FROM stores WHERE User_Id = ?", userId)
-// 	var prevDatas []model.Store
-// 	var prevData model.Store
+	rows, _ := db.Query("SELECT Review, Rating FROM product_reviews WHERE User_Id = ? AND Product_Id = ?", userId, productId)
+	var prevDatas []model.ProductReview
+	var prevData model.ProductReview
 
-// 	for rows.Next() {
-// 		if err := rows.Scan(&prevData.ID, &prevData.UserId, &prevData.Name, &prevData.Address); err != nil {
-// 			log.Println(err.Error())
-// 		} else {
-// 			prevDatas = append(prevDatas, prevData)
-// 		}
-// 	}
+	for rows.Next() {
+		if err := rows.Scan(&prevData.Review, &prevData.Rating); err != nil {
+			log.Println(err.Error())
+		} else {
+			prevDatas = append(prevDatas, prevData)
+		}
+	}
 
-// 	if len(prevDatas) > 0 {
-// 		if store.Name == "" {
-// 			store.Name = prevDatas[0].Name
-// 		}
-// 		if store.Address == "" {
-// 			store.Address = prevDatas[0].Address
-// 		}
+	if len(prevDatas) > 0 {
+		if review.Review == "" {
+			review.Review = prevDatas[0].Review
+		}
+		if review.Rating == 0 {
+			review.Rating = prevDatas[0].Rating
+		}
 
-// 		_, errQuery := db.Exec(`UPDATE stores SET Name = ?,  Address = ? WHERE User_id = ?`, store.Name, store.Address, userId)
+		_, errQuery := db.Exec(`UPDATE product_reviews SET Review = ?, Rating = ? WHERE User_Id = ? AND Product_Id = ?`, review.Review, review.Rating, userId, productId)
 
-// 		if errQuery == nil {
-// 			response.Status = 200
-// 			response.Message = "Success Update Data"
-// 			store.ID = prevData.ID
-// 			response.Data = store
-// 		} else {
-// 			response.Status = 400
-// 			response.Message = "Error Update Data"
-
-// 			log.Println(errQuery)
-// 		}
-// 	} else {
-// 		response.Status = 400
-// 		response.Message = "Data Not Found"
-// 	}
-// 	c.Header("Content-Type", "application/json")
-// 	c.JSON(response.Status, response)
-// }
-
-// func getStoreId(c *gin.Context) int {
-// 	db := connect()
-// 	_, userId, _, _ := validateTokenFromCookies(c)
-
-// 	rows, _ := db.Query("SELECT Id FROM stores WHERE User_Id = ?", userId)
-
-// 	var store model.Store
-// 	var stores []model.Store
-
-// 	for rows.Next() {
-// 		if err := rows.Scan(&store.UserId); err != nil {
-// 			log.Println(err.Error())
-// 		} else {
-// 			stores = append(stores, store)
-// 		}
-// 	}
-
-// 	return stores[0].UserId
-// }
+		if errQuery == nil {
+			response.Status = 200
+			response.Message = "Success Update Data"
+			review.ID = prevData.ID
+			response.Data = review
+		} else {
+			response.Status = 400
+			response.Message = "Error Update Data"
+			log.Println(errQuery)
+		}
+	} else {
+		response.Status = 400
+		response.Message = "Data Not Found"
+	}
+	c.Header("Content-Type", "application/json")
+	c.JSON(response.Status, response)
+}
