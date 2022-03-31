@@ -1,53 +1,26 @@
 package main
 
 import (
-	controller "Final-Project-JCC-Golang-2022/controller"
-
-	"github.com/gin-gonic/gin"
+	"Final-Project-JCC-Golang-2022/docs"
+	"Final-Project-JCC-Golang-2022/routes"
 )
 
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @termsOfService http://swagger.io/terms/
+
 func main() {
-	router := gin.Default()
+	docs.SwaggerInfo.Title = "Swagger Example API"
+	docs.SwaggerInfo.Description = "This is a sample server Movie."
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Host = "localhost:8080"
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
-	//1. User Biasa 2. Memiliki Toko 3. Admin
-	router.POST("/login", controller.UserLogin)
-	router.GET("/logout", controller.Logout)
-	router.POST("/register", controller.InsertUser)
-
-	admin := router.Group("/")
-	admin.Use(controller.Authenticate(3))
-	{
-		admin.DELETE("/users/:id", controller.DeleteUser)
-	}
-
-	basicUser := router.Group("/")
-	basicUser.Use(controller.Authenticate(1))
-	{
-		basicUser.PUT("/user", controller.UpdateUsers)
-		basicUser.POST("/store", controller.InsertMyStore)
-
-		basicUser.GET("/carts", controller.GetAllMyCart)
-		basicUser.DELETE("/cart/:cartId", controller.DeleteMyCart)
-		basicUser.POST("/cart", controller.InsertMyCart)
-		basicUser.PUT("/cart/:cartId", controller.UpdateMyChart)
-	}
-
-	storeOwner := router.Group("/")
-	storeOwner.Use(controller.Authenticate(2))
-	{
-		//Store
-		storeOwner.DELETE("/store", controller.DeleteMyStore)
-		storeOwner.PUT("/store", controller.UpdateMyStore)
-
-		//Products
-		storeOwner.DELETE("/product/:productId", controller.DeleteMyProduct)
-		storeOwner.POST("/product", controller.InsertMyProduct)
-		storeOwner.PUT("/product/:productId", controller.UpdateMyProduct)
-	}
-
-	router.GET("/users", controller.GetAllUsers)
-	router.GET("/stores", controller.GetAllStores)
-	router.GET("/products", controller.GetAllProducts)
-
-	router.Run(":8080")
+	r := routes.SetupRouter()
+	r.Run()
 }

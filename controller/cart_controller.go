@@ -126,7 +126,7 @@ func InsertMyCart(c *gin.Context) {
 
 }
 
-func UpdateMyChart(c *gin.Context) {
+func UpdateMyCart(c *gin.Context) {
 	db := connect()
 
 	var cart model.Cart
@@ -165,7 +165,7 @@ func UpdateMyChart(c *gin.Context) {
 		}
 	} else {
 		response.Status = 400
-		response.Message = "Product Not Found"
+		response.Message = "Cart Not Found"
 	}
 	c.Header("Content-Type", "application/json")
 	c.JSON(response.Status, response)

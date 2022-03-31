@@ -9,6 +9,13 @@ import (
 	model "Final-Project-JCC-Golang-2022/model"
 )
 
+// GetAllUsers godoc
+// @Summary Get all users.
+// @Description Get a list of users has been registered.
+// @Tags Users
+// @Produce json
+// @Success 200 {object} model.UsersResponse
+// @Router /users [get]
 func GetAllUsers(c *gin.Context) {
 
 	db := connect()
@@ -35,7 +42,7 @@ func GetAllUsers(c *gin.Context) {
 	var users []model.User
 
 	for rows.Next() {
-		if err := rows.Scan(&user.ID, &user.Name, &user.Phone, &user.Email, &user.Password, &user.Address, &user.UserType); err != nil {
+		if err := rows.Scan(&user.ID, &user.Name, &user.Phone, &user.Email, &user.Address, &user.UserType); err != nil {
 			log.Println(err.Error())
 		} else {
 			users = append(users, user)
@@ -51,7 +58,7 @@ func GetAllUsers(c *gin.Context) {
 		response.Message = "Data Not Found"
 	}
 	c.Header("Content-Type", "application/json")
-	c.JSON(response.Status, response)
+	c.JSON(response.Status, gin.H{"data": response})
 }
 
 func DeleteUser(c *gin.Context) {
@@ -81,7 +88,7 @@ func DeleteUser(c *gin.Context) {
 		log.Println(errQuery.Error())
 	}
 	c.Header("Content-Type", "application/json")
-	c.JSON(response.Status, response)
+	c.JSON(http.StatusOK, response)
 }
 
 func InsertUser(c *gin.Context) {
