@@ -9,9 +9,22 @@ import (
 	model "Final-Project-JCC-Golang-2022/model"
 )
 
+type userInput struct {
+	Name     string `json:"name"`
+	Phone    string `json:"phone"`
+	Email    string `json:"email"`
+	Password string `json:"password,omitempty"`
+	Address  string `json:"address"`
+}
+
+type userLogin struct {
+	Email    string `json:"email"`
+	Password string `json:"password,omitempty"`
+}
+
 // GetAllUsers godoc
 // @Summary Get all users.
-// @Description Get a list of users has been registered.
+// @Description Display all registered users.
 // @Tags Users
 // @Produce json
 // @Success 200 {object} model.UsersResponse
@@ -61,6 +74,14 @@ func GetAllUsers(c *gin.Context) {
 	c.JSON(response.Status, gin.H{"data": response})
 }
 
+// DeleteUser godoc
+// @Summary delete user.
+// @Description Delete user by id and admin only can use it.
+// @Tags Users
+// @Produce json
+// @Param id path string true "id"
+// @Success 200 {object} model.ErrorResponse
+// @Router /users [delete]
 func DeleteUser(c *gin.Context) {
 	db := connect()
 	defer db.Close()
@@ -88,9 +109,17 @@ func DeleteUser(c *gin.Context) {
 		log.Println(errQuery.Error())
 	}
 	c.Header("Content-Type", "application/json")
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, gin.H{"data": response})
 }
 
+// InsertUser godoc
+// @Summary insert user.
+// @Description insert user and it use for register user.
+// @Tags Users
+// @Produce json
+// @Param Body body userInput true "User's data"
+// @Success 200 {object} model.UserResponse
+// @Router /register [POST]
 func InsertUser(c *gin.Context) {
 
 	db := connect()
@@ -160,9 +189,18 @@ func InsertUser(c *gin.Context) {
 		log.Println(errQuery.Error())
 	}
 	c.Header("Content-Type", "application/json")
-	c.JSON(response.Status, response)
+	c.JSON(http.StatusOK, response)
 }
 
+// UpdateUser godoc
+// @Summary update user.
+// @Description change the data of the user who is currently logged in.
+// @Tags Users
+// @Produce json
+// @Param id path string true "id"
+// @Param Body body userInput true "User's data"
+// @Success 200 {object} model.UserResponse
+// @Router /users [PUT]
 func UpdateUsers(c *gin.Context) {
 	db := connect()
 
@@ -230,6 +268,13 @@ func UpdateUsers(c *gin.Context) {
 	}
 }
 
+// UserLogin godoc
+// @Summary login user.
+// @Description login for registered users.
+// @Tags Users
+// @Produce json
+// @Param Body body userLogin true "User's login data"
+// @Router /login [POST]
 func UserLogin(c *gin.Context) {
 	db := connect()
 	defer db.Close()

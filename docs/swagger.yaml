@@ -1,4 +1,31 @@
 definitions:
+  controllers.userInput:
+    properties:
+      address:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+    type: object
+  controllers.userLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  model.ErrorResponse:
+    properties:
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   model.User:
     properties:
       address:
@@ -14,6 +41,15 @@ definitions:
       phone:
         type: string
       usertype:
+        type: integer
+    type: object
+  model.UserResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.User'
+      message:
+        type: string
+      status:
         type: integer
     type: object
   model.UsersResponse:
@@ -37,9 +73,43 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
 paths:
+  /login:
+    post:
+      description: login for registered users.
+      parameters:
+      - description: User's login data
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.userLogin'
+      produces:
+      - application/json
+      responses: {}
+      summary: login user.
+      tags:
+      - Users
   /users:
+    delete:
+      description: Delete user by id and admin only can use it.
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: delete user.
+      tags:
+      - Users
     get:
-      description: Get a list of users has been registered.
+      description: Display all registered users.
       produces:
       - application/json
       responses:
@@ -48,6 +118,49 @@ paths:
           schema:
             $ref: '#/definitions/model.UsersResponse'
       summary: Get all users.
+      tags:
+      - Users
+    post:
+      description: insert user and it use for register user.
+      parameters:
+      - description: User's data
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.userInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserResponse'
+      summary: insert user.
+      tags:
+      - Users
+    put:
+      description: change the data of the user who is currently logged in.
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User's data
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.userInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserResponse'
+      summary: update user.
       tags:
       - Users
 swagger: "2.0"

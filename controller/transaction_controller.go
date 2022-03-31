@@ -9,8 +9,15 @@ import (
 	model "Final-Project-JCC-Golang-2022/model"
 )
 
-func GetAllMyTransaction(c *gin.Context) {
+type transactionInput struct {
+	Name     string `json:"name"`
+	Phone    string `json:"phone"`
+	Email    string `json:"email"`
+	Password string `json:"password,omitempty"`
+	Address  string `json:"address"`
+}
 
+func GetAllMyTransaction(c *gin.Context) {
 	db := connect()
 	var response model.TransactionsResponse
 	defer db.Close()
