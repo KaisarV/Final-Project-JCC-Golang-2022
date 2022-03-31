@@ -8,6 +8,13 @@ import (
 	model "Final-Project-JCC-Golang-2022/model"
 )
 
+// GetAllStores godoc
+// @Summary Get all stores.
+// @Description Display all stores.
+// @Tags Stores
+// @Produce json
+// @Success 200 {object} model.StoresResponse
+// @Router /stores [get]
 func GetAllStores(c *gin.Context) {
 
 	db := connect()
@@ -53,6 +60,13 @@ func GetAllStores(c *gin.Context) {
 	c.JSON(response.Status, response)
 }
 
+// DeleteMyStore godoc
+// @Summary delete store.
+// @Description delete the store belonging to the user who is currently logged in.
+// @Tags Stores
+// @Produce json
+// @Success 200 {object} model.ErrorResponse
+// @Router /store [delete]
 func DeleteMyStore(c *gin.Context) {
 	db := connect()
 	defer db.Close()
@@ -85,6 +99,14 @@ func DeleteMyStore(c *gin.Context) {
 	c.JSON(response.Status, response)
 }
 
+// InsertMyStore godoc
+// @Summary insert store.
+// @Description added the store of the currently logged in user.
+// @Tags Stores
+// @Produce json
+// @Param Body body userInput true "store's data"
+// @Success 200 {object} model.StoreResponse
+// @Router /store [POST]
 func InsertMyStore(c *gin.Context) {
 
 	db := connect()
@@ -143,6 +165,14 @@ func InsertMyStore(c *gin.Context) {
 
 }
 
+// UpdateMyStore godoc
+// @Summary update store.
+// @Description update the store of the currently logged in user.
+// @Tags Stores
+// @Produce json
+// @Param Body body model.Store true "store's data"
+// @Success 200 {object} model.StoreResponse
+// @Router /store [PUT]
 func UpdateMyStore(c *gin.Context) {
 	db := connect()
 

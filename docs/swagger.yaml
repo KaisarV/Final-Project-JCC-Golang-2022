@@ -26,6 +26,37 @@ definitions:
       status:
         type: integer
     type: object
+  model.Store:
+    properties:
+      address:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      userId:
+        type: integer
+    type: object
+  model.StoreResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.Store'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  model.StoresResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.Store'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   model.Transaction:
     properties:
       ProductId:
@@ -142,6 +173,71 @@ paths:
       summary: insert user.
       tags:
       - Users
+  /store:
+    delete:
+      description: delete the store belonging to the user who is currently logged
+        in.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: delete store.
+      tags:
+      - Stores
+    post:
+      description: added the store of the currently logged in user.
+      parameters:
+      - description: store's data
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.userInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.StoreResponse'
+      summary: insert store.
+      tags:
+      - Stores
+    put:
+      description: update the store of the currently logged in user.
+      parameters:
+      - description: store's data
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Store'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.StoreResponse'
+      summary: update store.
+      tags:
+      - Stores
+  /stores:
+    get:
+      description: Display all stores.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.StoresResponse'
+      summary: Get all stores.
+      tags:
+      - Stores
   /transactions:
     get:
       description: display all transactions of users who are currently logged in.
