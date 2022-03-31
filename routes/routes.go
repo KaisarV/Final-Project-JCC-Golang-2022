@@ -37,7 +37,7 @@ func SetupRouter() *gin.Engine {
 		basicUser.PUT("/cart/:cartId", controller.UpdateMyCart)
 
 		//Transaction
-		basicUser.GET("/transactions", controller.GetAllMyTransaction)
+		basicUser.GET("/transactions", controller.GetAllMyTransactions)
 		basicUser.POST("/transaction", controller.InsertMyTransactions)
 
 		//Product Review

@@ -9,15 +9,14 @@ import (
 	model "Final-Project-JCC-Golang-2022/model"
 )
 
-type transactionInput struct {
-	Name     string `json:"name"`
-	Phone    string `json:"phone"`
-	Email    string `json:"email"`
-	Password string `json:"password,omitempty"`
-	Address  string `json:"address"`
-}
-
-func GetAllMyTransaction(c *gin.Context) {
+// GetAllMyTransactions godoc
+// @Summary Get all transactions.
+// @Description display all transactions of users who are currently logged in.
+// @Tags Transactions
+// @Produce json
+// @Success 200 {object} model.TransactionsResponse
+// @Router /transactions [get]
+func GetAllMyTransactions(c *gin.Context) {
 	db := connect()
 	var response model.TransactionsResponse
 	defer db.Close()
@@ -56,6 +55,14 @@ func GetAllMyTransaction(c *gin.Context) {
 	c.JSON(response.Status, response)
 }
 
+// InsertMyTransaction godoc
+// @Summary insert transaction.
+// @Description insert user's transaction who currently logged in.
+// @Tags Transactions
+// @Produce json
+// @Param Body body model.Transaction true "transaction's data"
+// @Success 200 {object} model.TransactionResponse
+// @Router /transactions [POST]
 func InsertMyTransactions(c *gin.Context) {
 
 	db := connect()

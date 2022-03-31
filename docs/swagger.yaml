@@ -26,6 +26,39 @@ definitions:
       status:
         type: integer
     type: object
+  model.Transaction:
+    properties:
+      ProductId:
+        type: integer
+      date:
+        type: string
+      id:
+        type: integer
+      qty:
+        type: integer
+      userId:
+        type: integer
+    type: object
+  model.TransactionResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.Transaction'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  model.TransactionsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.Transaction'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   model.User:
     properties:
       address:
@@ -89,6 +122,58 @@ paths:
       summary: login user.
       tags:
       - Users
+  /register:
+    post:
+      description: insert user and it use for register user.
+      parameters:
+      - description: User's data
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.userInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserResponse'
+      summary: insert user.
+      tags:
+      - Users
+  /transactions:
+    get:
+      description: display all transactions of users who are currently logged in.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.TransactionsResponse'
+      summary: Get all transactions.
+      tags:
+      - Transactions
+    post:
+      description: insert user's transaction who currently logged in.
+      parameters:
+      - description: transaction's data
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Transaction'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.TransactionResponse'
+      summary: insert transaction.
+      tags:
+      - Transactions
   /users:
     delete:
       description: Delete user by id and admin only can use it.
@@ -118,25 +203,6 @@ paths:
           schema:
             $ref: '#/definitions/model.UsersResponse'
       summary: Get all users.
-      tags:
-      - Users
-    post:
-      description: insert user and it use for register user.
-      parameters:
-      - description: User's data
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/controllers.userInput'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.UserResponse'
-      summary: insert user.
       tags:
       - Users
     put:
