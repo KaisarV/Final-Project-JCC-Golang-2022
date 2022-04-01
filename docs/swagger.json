@@ -404,7 +404,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ProductReview"
+                            "$ref": "#/definitions/controllers.ProductReviewInput"
                         }
                     }
                 ],
@@ -440,7 +440,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ProductReview"
+                            "$ref": "#/definitions/controllers.ProductReviewInput"
                         }
                     }
                 ],
@@ -759,6 +759,17 @@
                     "type": "string"
                 },
                 "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.ProductReviewInput": {
+            "type": "object",
+            "properties": {
+                "rating": {
+                    "type": "integer"
+                },
+                "review": {
                     "type": "string"
                 }
             }

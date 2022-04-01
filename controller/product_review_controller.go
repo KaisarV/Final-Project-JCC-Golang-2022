@@ -2,12 +2,18 @@ package controllers
 
 import (
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 
 	model "Final-Project-JCC-Golang-2022/model"
 )
+
+type ProductReviewInput struct {
+	Review string `json:"review"`
+	Rating int    `json:"rating"`
+}
 
 // GetAllMyProductReviews godoc
 // @Summary Get all product reviews.
@@ -103,7 +109,7 @@ func DeleteMyProductReview(c *gin.Context) {
 // @Tags Reviews
 // @Produce json
 // @Param productid path string true "productid"
-// @Param Body body model.ProductReview true "review's data"
+// @Param Body body ProductReviewInput true "review's data"
 // @Success 200 {object} model.ProductReviewResponse
 // @Router /review/{productid} [POST]
 func InsertMyProductReview(c *gin.Context) {
@@ -114,6 +120,19 @@ func InsertMyProductReview(c *gin.Context) {
 	var response model.ProductReviewResponse
 	_, userId, _, _ := validateTokenFromCookies(c)
 	productId := c.Param("productid")
+	var input ProductReviewInput
+	if c.Request.Header.Get("Content-Type") == "application/json" {
+		if err := c.ShouldBindJSON(&input); err != nil {
+			response.Status = 400
+			response.Message = err.Error()
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusOK, response)
+			return
+		}
+	} else {
+		input.Review = c.PostForm("review")
+		input.Rating, _ = strconv.Atoi(c.PostForm("rating"))
+	}
 
 	rows, err := db.Query("SELECT * FROM transactions WHERE User_Id = ? AND Product_Id = ?", userId, productId)
 
@@ -161,8 +180,8 @@ func InsertMyProductReview(c *gin.Context) {
 		return
 	}
 
-	review.Review = c.PostForm("review")
-	review.Rating, _ = strconv.Atoi(c.PostForm("rating"))
+	review.Review = input.Review
+	review.Rating = input.Rating
 
 	if review.Rating > 5 {
 		response.Status = 400
@@ -213,7 +232,7 @@ func InsertMyProductReview(c *gin.Context) {
 // @Tags Reviews
 // @Produce json
 // @Param productid path string true "productid"
-// @Param Body body model.ProductReview true "transaction's data"
+// @Param Body body ProductReviewInput true "transaction's data"
 // @Success 200 {object} model.ProductReviewResponse
 // @Router /review/{productid} [PUT]
 func UpdateMyProductReview(c *gin.Context) {
@@ -223,9 +242,23 @@ func UpdateMyProductReview(c *gin.Context) {
 	var response model.ProductReviewResponse
 	_, userId, _, _ := validateTokenFromCookies(c)
 	productId := c.Param("productid")
+	var input ProductReviewInput
 
-	review.Review = c.PostForm("review")
-	review.Rating, _ = strconv.Atoi(c.PostForm("rating"))
+	if c.Request.Header.Get("Content-Type") == "application/json" {
+		if err := c.ShouldBindJSON(&input); err != nil {
+			response.Status = 400
+			response.Message = err.Error()
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusOK, response)
+			return
+		}
+	} else {
+		input.Review = c.PostForm("review")
+		input.Rating, _ = strconv.Atoi(c.PostForm("rating"))
+	}
+
+	review.Review = input.Review
+	review.Rating = input.Rating
 
 	rows, _ := db.Query("SELECT Review, Rating FROM product_reviews WHERE User_Id = ? AND Product_Id = ?", userId, productId)
 	var prevDatas []model.ProductReview

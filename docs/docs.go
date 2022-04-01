@@ -416,7 +416,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ProductReview"
+                            "$ref": "#/definitions/controllers.ProductReviewInput"
                         }
                     }
                 ],
@@ -452,7 +452,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ProductReview"
+                            "$ref": "#/definitions/controllers.ProductReviewInput"
                         }
                     }
                 ],
@@ -771,6 +771,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.ProductReviewInput": {
+            "type": "object",
+            "properties": {
+                "rating": {
+                    "type": "integer"
+                },
+                "review": {
                     "type": "string"
                 }
             }
