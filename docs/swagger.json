@@ -155,7 +155,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Feedback"
+                            "$ref": "#/definitions/controllers.FeedbackInput"
                         }
                     }
                 ],
@@ -732,6 +732,14 @@
         }
     },
     "definitions": {
+        "controllers.FeedbackInput": {
+            "type": "object",
+            "properties": {
+                "feedback": {
+                    "type": "string"
+                }
+            }
+        },
         "controllers.InputLogin": {
             "type": "object",
             "properties": {

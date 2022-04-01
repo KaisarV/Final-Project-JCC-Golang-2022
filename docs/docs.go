@@ -167,7 +167,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Feedback"
+                            "$ref": "#/definitions/controllers.FeedbackInput"
                         }
                     }
                 ],
@@ -744,6 +744,14 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controllers.FeedbackInput": {
+            "type": "object",
+            "properties": {
+                "feedback": {
+                    "type": "string"
+                }
+            }
+        },
         "controllers.InputLogin": {
             "type": "object",
             "properties": {

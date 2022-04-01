@@ -2,11 +2,16 @@ package controllers
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 
 	model "Final-Project-JCC-Golang-2022/model"
 )
+
+type FeedbackInput struct {
+	Feedback string `json:"feedback"`
+}
 
 // GetAllFeedbacks godoc
 // @Summary Get all user feedback.
@@ -107,7 +112,7 @@ func GetAllMyFeedbacks(c *gin.Context) {
 // @Description added feedback about the app so admin can see it.
 // @Tags Feedbacks
 // @Produce json
-// @Param Body body model.Feedback true "feedback's data"
+// @Param Body body FeedbackInput true "feedback's data"
 // @Success 200 {object}  model.FeedbackResponse
 // @Router /feedbacks [POST]
 func InsertMyFeedbacks(c *gin.Context) {
@@ -117,8 +122,20 @@ func InsertMyFeedbacks(c *gin.Context) {
 	var feedback model.Feedback
 	var response model.FeedbackResponse
 	_, userId, _, _ := validateTokenFromCookies(c)
+	var input FeedbackInput
+	if c.Request.Header.Get("Content-Type") == "application/json" {
+		if err := c.ShouldBindJSON(&input); err != nil {
+			response.Status = 400
+			response.Message = err.Error()
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusOK, response)
+			return
+		}
+	} else {
+		input.Feedback = c.PostForm("feedback")
+	}
 
-	feedback.Feedback = c.PostForm("feedback")
+	feedback.Feedback = input.Feedback
 
 	if feedback.Feedback == "" {
 		response.Status = 400

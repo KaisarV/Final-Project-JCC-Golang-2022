@@ -1,4 +1,9 @@
 definitions:
+  controllers.FeedbackInput:
+    properties:
+      feedback:
+        type: string
+    type: object
   controllers.InputLogin:
     properties:
       email:
@@ -381,7 +386,7 @@ paths:
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/model.Feedback'
+          $ref: '#/definitions/controllers.FeedbackInput'
       produces:
       - application/json
       responses:
