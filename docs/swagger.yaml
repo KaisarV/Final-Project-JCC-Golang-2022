@@ -24,6 +24,15 @@ definitions:
       phone:
         type: string
     type: object
+  controllers.ProductInput:
+    properties:
+      category:
+        type: string
+      name:
+        type: string
+      price:
+        type: integer
+    type: object
   controllers.ProductReviewInput:
     properties:
       rating:
@@ -448,7 +457,7 @@ paths:
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/model.Product'
+          $ref: '#/definitions/controllers.ProductInput'
       produces:
       - application/json
       responses:
@@ -491,7 +500,7 @@ paths:
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/model.Product'
+          $ref: '#/definitions/controllers.ProductInput'
       produces:
       - application/json
       responses:

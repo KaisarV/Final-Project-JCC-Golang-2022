@@ -2,12 +2,19 @@ package controllers
 
 import (
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 
 	model "Final-Project-JCC-Golang-2022/model"
 )
+
+type ProductInput struct {
+	Name     string `json:"name"`
+	Category string `json:"category"`
+	Price    int    `json:"price"`
+}
 
 // GetAllMyProduct godoc
 // @Summary Get all product.
@@ -105,7 +112,7 @@ func DeleteMyProduct(c *gin.Context) {
 // @Description insert products sold by logged in users.
 // @Tags Products
 // @Produce json
-// @Param Body body model.Product true "product's data"
+// @Param Body body ProductInput true "product's data"
 // @Success 200 {object}  model.ProductResponse
 // @Router /product [POST]
 func InsertMyProduct(c *gin.Context) {
@@ -114,13 +121,22 @@ func InsertMyProduct(c *gin.Context) {
 
 	var product model.Product
 	var response model.ProductResponse
+	var input ProductInput
+	if c.Request.Header.Get("Content-Type") == "application/json" {
+		if err := c.ShouldBindJSON(&input); err != nil {
+			response.Status = 400
+			response.Message = err.Error()
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusOK, response)
+			return
+		}
+	} else {
+		input.Name = c.PostForm("name")
+		input.Category = c.PostForm("category")
+		input.Price, _ = strconv.Atoi(c.PostForm("price"))
+	}
 
-	product.Name = c.PostForm("name")
-	product.Category = c.PostForm("category")
-	product.Price, _ = strconv.Atoi(c.PostForm("price"))
-	product.StoreId = getStoreId(c)
-
-	if product.Name == "" {
+	if input.Name == "" {
 		response.Status = 400
 		response.Message = "Please Insert product's Name"
 		c.Header("Content-Type", "application/json")
@@ -128,7 +144,7 @@ func InsertMyProduct(c *gin.Context) {
 		return
 	}
 
-	if product.Category == "" {
+	if input.Category == "" {
 		response.Status = 400
 		response.Message = "Please Insert product's category"
 		c.Header("Content-Type", "application/json")
@@ -136,13 +152,18 @@ func InsertMyProduct(c *gin.Context) {
 		return
 	}
 
-	if product.Price == 0 {
+	if input.Price == 0 {
 		response.Status = 400
 		response.Message = "Please Insert product's price"
 		c.Header("Content-Type", "application/json")
 		c.JSON(response.Status, response)
 		return
 	}
+
+	product.Name = input.Name
+	product.Category = input.Category
+	product.Price = input.Price
+	product.StoreId = getStoreId(c)
 
 	res, errQuery := db.Exec("INSERT INTO products(Name, Category,  Price, Store_Id) VALUES(?, ?, ?,?)", product.Name, product.Category, product.Price, product.StoreId)
 
@@ -169,7 +190,7 @@ func InsertMyProduct(c *gin.Context) {
 // @Tags Products
 // @Produce json
 // @Param productid path string true "productid"
-// @Param Body body model.Product true "product's data"
+// @Param Body body ProductInput true "product's data"
 // @Success 200 {object} model.ProductResponse
 // @Router /product/{productid} [PUT]
 func UpdateMyProduct(c *gin.Context) {
@@ -177,11 +198,25 @@ func UpdateMyProduct(c *gin.Context) {
 
 	var product model.Product
 	var response model.ProductResponse
+	var input ProductInput
+	if c.Request.Header.Get("Content-Type") == "application/json" {
+		if err := c.ShouldBindJSON(&input); err != nil {
+			response.Status = 400
+			response.Message = err.Error()
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusOK, response)
+			return
+		}
+	} else {
+		input.Name = c.PostForm("name")
+		input.Category = c.PostForm("category")
+		input.Price, _ = strconv.Atoi(c.PostForm("price"))
+	}
 
 	product.ID, _ = strconv.Atoi(c.Param("productid"))
-	product.Name = c.PostForm("name")
-	product.Category = c.PostForm("category")
-	product.Price, _ = strconv.Atoi(c.PostForm("price"))
+	product.Name = input.Name
+	product.Category = input.Category
+	product.Price = input.Price
 	product.StoreId = getStoreId(c)
 
 	rows, _ := db.Query("SELECT * FROM products WHERE Id = ? AND Store_Id = ?", product.ID, product.StoreId)

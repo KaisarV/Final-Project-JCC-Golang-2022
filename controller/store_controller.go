@@ -260,7 +260,6 @@ func UpdateMyStore(c *gin.Context) {
 func getStoreId(c *gin.Context) int {
 	db := connect()
 	_, userId, _, _ := validateTokenFromCookies(c)
-
 	rows, _ := db.Query("SELECT Id FROM stores WHERE User_Id = ?", userId)
 
 	var store model.Store

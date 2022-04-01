@@ -262,7 +262,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Product"
+                            "$ref": "#/definitions/controllers.ProductInput"
                         }
                     }
                 ],
@@ -300,7 +300,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Product"
+                            "$ref": "#/definitions/controllers.ProductInput"
                         }
                     }
                 ],
@@ -780,6 +780,20 @@ const docTemplate = `{
                 },
                 "phone": {
                     "type": "string"
+                }
+            }
+        },
+        "controllers.ProductInput": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
                 }
             }
         },
