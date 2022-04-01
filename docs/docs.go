@@ -611,25 +611,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/transactions": {
-            "get": {
-                "description": "display all transactions of users who are currently logged in.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Transactions"
-                ],
-                "summary": "Get all transactions.",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.TransactionsResponse"
-                        }
-                    }
-                }
-            },
+        "/transaction": {
             "post": {
                 "description": "insert user's transaction who currently logged in.",
                 "produces": [
@@ -646,7 +628,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Transaction"
+                            "$ref": "#/definitions/controllers.TransactionInput"
                         }
                     }
                 ],
@@ -655,6 +637,26 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.TransactionResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/transactions": {
+            "get": {
+                "description": "display all transactions of users who are currently logged in.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Get all transactions.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.TransactionsResponse"
                         }
                     }
                 }
@@ -770,6 +772,17 @@ const docTemplate = `{
                 },
                 "phone": {
                     "type": "string"
+                }
+            }
+        },
+        "controllers.TransactionInput": {
+            "type": "object",
+            "properties": {
+                "productId": {
+                    "type": "integer"
+                },
+                "qty": {
+                    "type": "integer"
                 }
             }
         },
@@ -1036,13 +1049,13 @@ const docTemplate = `{
         "model.Transaction": {
             "type": "object",
             "properties": {
-                "ProductId": {
-                    "type": "integer"
-                },
                 "date": {
                     "type": "string"
                 },
                 "id": {
+                    "type": "integer"
+                },
+                "productId": {
                     "type": "integer"
                 },
                 "qty": {

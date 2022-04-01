@@ -3,7 +3,7 @@ package model
 type Transaction struct {
 	ID        int    `json:"id"`
 	UserId    int    `json:"userId"`
-	ProductId int    `json:"ProductId"`
+	ProductId int    `json:"productId"`
 	Date      string `json:"date"`
 	Quantity  int    `json:"qty"`
 }

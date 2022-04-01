@@ -19,6 +19,13 @@ definitions:
       phone:
         type: string
     type: object
+  controllers.TransactionInput:
+    properties:
+      productId:
+        type: integer
+      qty:
+        type: integer
+    type: object
   model.Cart:
     properties:
       ProductId:
@@ -189,11 +196,11 @@ definitions:
     type: object
   model.Transaction:
     properties:
-      ProductId:
-        type: integer
       date:
         type: string
       id:
+        type: integer
+      productId:
         type: integer
       qty:
         type: integer
@@ -654,6 +661,26 @@ paths:
       summary: Get all stores.
       tags:
       - Stores
+  /transaction:
+    post:
+      description: insert user's transaction who currently logged in.
+      parameters:
+      - description: transaction's data
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.TransactionInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.TransactionResponse'
+      summary: insert transaction.
+      tags:
+      - Transactions
   /transactions:
     get:
       description: display all transactions of users who are currently logged in.
@@ -665,25 +692,6 @@ paths:
           schema:
             $ref: '#/definitions/model.TransactionsResponse'
       summary: Get all transactions.
-      tags:
-      - Transactions
-    post:
-      description: insert user's transaction who currently logged in.
-      parameters:
-      - description: transaction's data
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/model.Transaction'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.TransactionResponse'
-      summary: insert transaction.
       tags:
       - Transactions
   /user:

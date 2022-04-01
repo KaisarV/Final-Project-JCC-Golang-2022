@@ -189,6 +189,21 @@ func InsertUser(c *gin.Context) {
 	user.Password = input.Password
 	user.Address = input.Address
 
+	rows, _ := db.Query("SELECT Email FROM users WHERE Email = ?", user.Email)
+
+	i := 0
+	for rows.Next() {
+		i++
+	}
+
+	if i != 0 {
+		response.Status = 400
+		response.Message = "Email already registered"
+		c.Header("Content-Type", "application/json")
+		c.JSON(response.Status, response)
+		return
+	}
+
 	res, errQuery := db.Exec("INSERT INTO users(Name, Phone,  Email, Password,Address) VALUES(?, ?, ?, ?, ?)", user.Name, user.Phone, user.Email, user.Password, user.Address)
 
 	id, _ := res.LastInsertId()

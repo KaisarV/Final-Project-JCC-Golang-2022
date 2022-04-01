@@ -2,12 +2,18 @@ package controllers
 
 import (
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 
 	model "Final-Project-JCC-Golang-2022/model"
 )
+
+type TransactionInput struct {
+	ProductId int `json:"productId"`
+	Quantity  int `json:"qty"`
+}
 
 // GetAllMyTransactions godoc
 // @Summary Get all transactions.
@@ -21,7 +27,6 @@ func GetAllMyTransactions(c *gin.Context) {
 	var response model.TransactionsResponse
 	defer db.Close()
 	_, userId, _, _ := validateTokenFromCookies(c)
-
 	rows, err := db.Query("SELECT * FROM transactions WHERE User_Id = ?", userId)
 
 	if err != nil {
@@ -60,19 +65,33 @@ func GetAllMyTransactions(c *gin.Context) {
 // @Description insert user's transaction who currently logged in.
 // @Tags Transactions
 // @Produce json
-// @Param Body body model.Transaction true "transaction's data"
+// @Param Body body TransactionInput true "transaction's data"
 // @Success 200 {object} model.TransactionResponse
-// @Router /transactions [POST]
+// @Router /transaction [POST]
 func InsertMyTransactions(c *gin.Context) {
 
 	db := connect()
 
 	var transaction model.Transaction
 	var response model.TransactionResponse
+	var input TransactionInput
+
+	if c.Request.Header.Get("Content-Type") == "application/json" {
+		if err := c.ShouldBindJSON(&input); err != nil {
+			response.Status = 400
+			response.Message = err.Error()
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusOK, response)
+			return
+		}
+	} else {
+		input.Quantity, _ = strconv.Atoi(c.PostForm("qty"))
+		input.ProductId, _ = strconv.Atoi(c.PostForm("productid"))
+	}
 
 	_, transaction.UserId, _, _ = validateTokenFromCookies(c)
-	transaction.Quantity, _ = strconv.Atoi(c.PostForm("qty"))
-	transaction.ProductId, _ = strconv.Atoi(c.PostForm("productid"))
+	transaction.Quantity = input.Quantity
+	transaction.ProductId = input.ProductId
 
 	if transaction.Quantity == 0 {
 		response.Status = 400
