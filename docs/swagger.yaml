@@ -26,6 +26,74 @@ definitions:
       status:
         type: integer
     type: object
+  model.Product:
+    properties:
+      category:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: integer
+      storeId:
+        type: integer
+    type: object
+  model.ProductResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.Product'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  model.ProductReview:
+    properties:
+      Date:
+        type: string
+      id:
+        type: integer
+      productid:
+        type: integer
+      rating:
+        type: integer
+      review:
+        type: string
+      userid:
+        type: integer
+    type: object
+  model.ProductReviewResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.ProductReview'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  model.ProductReviewsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.ProductReview'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  model.ProductsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.Product'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   model.Store:
     properties:
       address:
@@ -153,6 +221,91 @@ paths:
       summary: login user.
       tags:
       - Users
+  /logout:
+    get:
+      description: logout user.
+      produces:
+      - application/json
+      responses: {}
+      summary: logout user.
+      tags:
+      - Users
+  /product:
+    post:
+      description: delete products sold by logged in users.
+      parameters:
+      - description: product's data
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Product'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ProductResponse'
+      summary: delete prodduct.
+      tags:
+      - Products
+  /product/{productid}:
+    delete:
+      description: delete products sold by logged in users.
+      parameters:
+      - description: productid
+        in: path
+        name: productid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: delete prodduct.
+      tags:
+      - Products
+    put:
+      description: product updates sold by logged in users.
+      parameters:
+      - description: productid
+        in: path
+        name: productid
+        required: true
+        type: string
+      - description: product's data
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Product'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ProductResponse'
+      summary: update product's data.
+      tags:
+      - Products
+  /products:
+    get:
+      description: display all products.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ProductsResponse'
+      summary: Get all product.
+      tags:
+      - Products
   /register:
     post:
       description: insert user and it use for register user.
@@ -162,7 +315,7 @@ paths:
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/controllers.userInput'
+          $ref: '#/definitions/model.User'
       produces:
       - application/json
       responses:
@@ -173,6 +326,86 @@ paths:
       summary: insert user.
       tags:
       - Users
+  /review/{productid}:
+    delete:
+      description: delete the review that has been given.
+      parameters:
+      - description: productid
+        in: path
+        name: productid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: delete prodduct review.
+      tags:
+      - Reviews
+    post:
+      description: leave a review on the product that has been purchased.
+      parameters:
+      - description: productid
+        in: path
+        name: productid
+        required: true
+        type: string
+      - description: review's data
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/model.ProductReview'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ProductReviewResponse'
+      summary: delete prodduct review.
+      tags:
+      - Reviews
+    put:
+      description: update a review on the product that has been purchased.
+      parameters:
+      - description: productid
+        in: path
+        name: productid
+        required: true
+        type: string
+      - description: transaction's data
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/model.ProductReview'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ProductReviewResponse'
+      summary: update product's review.
+      tags:
+      - Reviews
+  /reviews:
+    get:
+      description: displays customer reviews given to things that have been purchased.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ProductReviewsResponse'
+      summary: Get all product reviews.
+      tags:
+      - Reviews
   /store:
     delete:
       description: delete the store belonging to the user who is currently logged
@@ -271,24 +504,6 @@ paths:
       tags:
       - Transactions
   /users:
-    delete:
-      description: Delete user by id and admin only can use it.
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.ErrorResponse'
-      summary: delete user.
-      tags:
-      - Users
     get:
       description: Display all registered users.
       produces:
@@ -323,6 +538,25 @@ paths:
           schema:
             $ref: '#/definitions/model.UserResponse'
       summary: update user.
+      tags:
+      - Users
+  /users/{id}:
+    delete:
+      description: Delete user by id and admin only can use it.
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: delete user.
       tags:
       - Users
 swagger: "2.0"

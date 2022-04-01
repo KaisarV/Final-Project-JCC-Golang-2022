@@ -37,6 +37,135 @@
                 "responses": {}
             }
         },
+        "/logout": {
+            "get": {
+                "description": "logout user.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "logout user.",
+                "responses": {}
+            }
+        },
+        "/product": {
+            "post": {
+                "description": "delete products sold by logged in users.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Products"
+                ],
+                "summary": "delete prodduct.",
+                "parameters": [
+                    {
+                        "description": "product's data",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Product"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ProductResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/product/{productid}": {
+            "put": {
+                "description": "product updates sold by logged in users.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Products"
+                ],
+                "summary": "update product's data.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "productid",
+                        "name": "productid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "product's data",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Product"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ProductResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "delete products sold by logged in users.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Products"
+                ],
+                "summary": "delete prodduct.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "productid",
+                        "name": "productid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/products": {
+            "get": {
+                "description": "display all products.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get all product.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ProductsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/register": {
             "post": {
                 "description": "insert user and it use for register user.",
@@ -54,7 +183,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controllers.userInput"
+                            "$ref": "#/definitions/model.User"
                         }
                     }
                 ],
@@ -63,6 +192,127 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.UserResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/review/{productid}": {
+            "put": {
+                "description": "update a review on the product that has been purchased.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "update product's review.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "productid",
+                        "name": "productid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "transaction's data",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ProductReview"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ProductReviewResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "leave a review on the product that has been purchased.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "delete prodduct review.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "productid",
+                        "name": "productid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "review's data",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ProductReview"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ProductReviewResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "delete the review that has been given.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "delete prodduct review.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "productid",
+                        "name": "productid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/reviews": {
+            "get": {
+                "description": "displays customer reviews given to things that have been purchased.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Get all product reviews.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ProductReviewsResponse"
                         }
                     }
                 }
@@ -269,7 +519,9 @@
                         }
                     }
                 }
-            },
+            }
+        },
+        "/users/{id}": {
             "delete": {
                 "description": "Delete user by id and admin only can use it.",
                 "produces": [
@@ -334,6 +586,111 @@
         "model.ErrorResponse": {
             "type": "object",
             "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Product": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "storeId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.ProductResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.Product"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.ProductReview": {
+            "type": "object",
+            "properties": {
+                "Date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "productid": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "integer"
+                },
+                "review": {
+                    "type": "string"
+                },
+                "userid": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.ProductReviewResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.ProductReview"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.ProductReviewsResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.ProductReview"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.ProductsResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Product"
+                    }
+                },
                 "message": {
                     "type": "string"
                 },

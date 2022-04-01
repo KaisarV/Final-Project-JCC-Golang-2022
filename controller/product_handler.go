@@ -9,6 +9,13 @@ import (
 	model "Final-Project-JCC-Golang-2022/model"
 )
 
+// GetAllMyProduct godoc
+// @Summary Get all product.
+// @Description display all products.
+// @Tags Products
+// @Produce json
+// @Success 200 {object} model.ProductsResponse
+// @Router /products [get]
 func GetAllProducts(c *gin.Context) {
 
 	db := connect()
@@ -54,13 +61,21 @@ func GetAllProducts(c *gin.Context) {
 	c.JSON(response.Status, response)
 }
 
+// DeleteMyProduct godoc
+// @Summary delete prodduct.
+// @Description delete products sold by logged in users.
+// @Tags Products
+// @Produce json
+// @Param productid path string true "productid"
+// @Success 200 {object} model.ErrorResponse
+// @Router /product/{productid} [delete]
 func DeleteMyProduct(c *gin.Context) {
 	db := connect()
 	defer db.Close()
 
 	var response model.ErrorResponse
 	storeId := getStoreId(c)
-	productId := c.Param("productId")
+	productId := c.Param("productid")
 
 	query, errQuery := db.Exec(`DELETE FROM products WHERE Store_Id = ? AND Id = ?;`, storeId, productId)
 	RowsAffected, _ := query.RowsAffected()
@@ -85,6 +100,14 @@ func DeleteMyProduct(c *gin.Context) {
 	c.JSON(response.Status, response)
 }
 
+// InsertMyProduct godoc
+// @Summary delete prodduct.
+// @Description delete products sold by logged in users.
+// @Tags Products
+// @Produce json
+// @Param Body body model.Product true "product's data"
+// @Success 200 {object}  model.ProductResponse
+// @Router /product [POST]
 func InsertMyProduct(c *gin.Context) {
 
 	db := connect()
@@ -140,13 +163,22 @@ func InsertMyProduct(c *gin.Context) {
 
 }
 
+// UpdateMyProduct godoc
+// @Summary update product's data.
+// @Description product updates sold by logged in users.
+// @Tags Products
+// @Produce json
+// @Param productid path string true "productid"
+// @Param Body body model.Product true "product's data"
+// @Success 200 {object} model.ProductResponse
+// @Router /product/{productid} [PUT]
 func UpdateMyProduct(c *gin.Context) {
 	db := connect()
 
 	var product model.Product
 	var response model.ProductResponse
 
-	product.ID, _ = strconv.Atoi(c.Param("productId"))
+	product.ID, _ = strconv.Atoi(c.Param("productid"))
 	product.Name = c.PostForm("name")
 	product.Category = c.PostForm("category")
 	product.Price, _ = strconv.Atoi(c.PostForm("price"))

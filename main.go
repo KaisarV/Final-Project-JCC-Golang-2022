@@ -15,8 +15,8 @@ import (
 // @termsOfService http://swagger.io/terms/
 
 func main() {
-	docs.SwaggerInfo.Title = "Swagger Example API"
-	docs.SwaggerInfo.Description = "This is a sample server Movie."
+	docs.SwaggerInfo.Title = "E-Commerce API"
+	docs.SwaggerInfo.Description = "This API is used for online website."
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Host = "localhost:8080"
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}

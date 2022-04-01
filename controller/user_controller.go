@@ -81,7 +81,7 @@ func GetAllUsers(c *gin.Context) {
 // @Produce json
 // @Param id path string true "id"
 // @Success 200 {object} model.ErrorResponse
-// @Router /users [delete]
+// @Router /users/{id} [delete]
 func DeleteUser(c *gin.Context) {
 	db := connect()
 	defer db.Close()
@@ -117,7 +117,7 @@ func DeleteUser(c *gin.Context) {
 // @Description insert user and it use for register user.
 // @Tags Users
 // @Produce json
-// @Param Body body userInput true "User's data"
+// @Param Body body model.User true "User's data"
 // @Success 200 {object} model.UserResponse
 // @Router /register [POST]
 func InsertUser(c *gin.Context) {
@@ -320,6 +320,12 @@ func UserLogin(c *gin.Context) {
 
 }
 
+// Logout godoc
+// @Summary logout user.
+// @Description logout user.
+// @Tags Users
+// @Produce json
+// @Router /logout [GET]
 func Logout(c *gin.Context) {
 	resetUserToken(c)
 	sendSuccessResponse(c)

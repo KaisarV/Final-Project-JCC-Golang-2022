@@ -9,6 +9,13 @@ import (
 	model "Final-Project-JCC-Golang-2022/model"
 )
 
+// GetAllMyProductReviews godoc
+// @Summary Get all product reviews.
+// @Description displays customer reviews given to things that have been purchased.
+// @Tags Reviews
+// @Produce json
+// @Success 200 {object} model.ProductReviewsResponse
+// @Router /reviews [get]
 func GetAllMyProductReviews(c *gin.Context) {
 
 	db := connect()
@@ -50,6 +57,14 @@ func GetAllMyProductReviews(c *gin.Context) {
 	c.JSON(response.Status, response)
 }
 
+// DeleteMyProductReview godoc
+// @Summary delete prodduct review.
+// @Description delete the review that has been given.
+// @Tags Reviews
+// @Produce json
+// @Param productid path string true "productid"
+// @Success 200 {object} model.ErrorResponse
+// @Router /review/{productid} [delete]
 func DeleteMyProductReview(c *gin.Context) {
 	db := connect()
 	defer db.Close()
@@ -82,6 +97,15 @@ func DeleteMyProductReview(c *gin.Context) {
 	c.JSON(response.Status, response)
 }
 
+// InsertMyProductReview godoc
+// @Summary delete prodduct review.
+// @Description leave a review on the product that has been purchased.
+// @Tags Reviews
+// @Produce json
+// @Param productid path string true "productid"
+// @Param Body body model.ProductReview true "review's data"
+// @Success 200 {object} model.ProductReviewResponse
+// @Router /review/{productid} [POST]
 func InsertMyProductReview(c *gin.Context) {
 
 	db := connect()
@@ -183,6 +207,15 @@ func InsertMyProductReview(c *gin.Context) {
 
 }
 
+// UpdateMyProductReview godoc
+// @Summary update product's review.
+// @Description update a review on the product that has been purchased.
+// @Tags Reviews
+// @Produce json
+// @Param productid path string true "productid"
+// @Param Body body model.ProductReview true "transaction's data"
+// @Success 200 {object} model.ProductReviewResponse
+// @Router /review/{productid} [PUT]
 func UpdateMyProductReview(c *gin.Context) {
 	db := connect()
 

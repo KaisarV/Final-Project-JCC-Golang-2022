@@ -59,9 +59,9 @@ func SetupRouter() *gin.Engine {
 		storeOwner.PUT("/store", controller.UpdateMyStore)
 
 		//Products
-		storeOwner.DELETE("/product/:productId", controller.DeleteMyProduct)
+		storeOwner.DELETE("/product/:productid", controller.DeleteMyProduct)
 		storeOwner.POST("/product", controller.InsertMyProduct)
-		storeOwner.PUT("/product/:productId", controller.UpdateMyProduct)
+		storeOwner.PUT("/product/:productid", controller.UpdateMyProduct)
 	}
 
 	router.GET("/users", controller.GetAllUsers)

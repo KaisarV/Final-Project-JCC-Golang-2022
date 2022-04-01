@@ -72,7 +72,7 @@ func InsertMyTransactions(c *gin.Context) {
 
 	_, transaction.UserId, _, _ = validateTokenFromCookies(c)
 	transaction.Quantity, _ = strconv.Atoi(c.PostForm("qty"))
-	transaction.ProductId, _ = strconv.Atoi(c.PostForm("productId"))
+	transaction.ProductId, _ = strconv.Atoi(c.PostForm("productid"))
 
 	if transaction.Quantity == 0 {
 		response.Status = 400
