@@ -60,7 +60,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Cart"
+                            "$ref": "#/definitions/controllers.CartInput"
                         }
                     }
                 ],
@@ -75,7 +75,7 @@ const docTemplate = `{
             }
         },
         "/cart/{cartId}": {
-            "post": {
+            "put": {
                 "description": "update cart belongs to the user who is currently logged in.",
                 "produces": [
                     "application/json"
@@ -86,12 +86,19 @@ const docTemplate = `{
                 "summary": "update cart.",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "cartId",
+                        "name": "cartId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "cart's data",
                         "name": "Body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Cart"
+                            "$ref": "#/definitions/controllers.CartUpdateInput"
                         }
                     }
                 ],
@@ -744,6 +751,25 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controllers.CartInput": {
+            "type": "object",
+            "properties": {
+                "ProductId": {
+                    "type": "integer"
+                },
+                "qty": {
+                    "type": "integer"
+                }
+            }
+        },
+        "controllers.CartUpdateInput": {
+            "type": "object",
+            "properties": {
+                "qty": {
+                    "type": "integer"
+                }
+            }
+        },
         "controllers.FeedbackInput": {
             "type": "object",
             "properties": {

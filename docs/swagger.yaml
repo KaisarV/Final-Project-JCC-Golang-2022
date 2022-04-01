@@ -1,4 +1,16 @@
 definitions:
+  controllers.CartInput:
+    properties:
+      ProductId:
+        type: integer
+      qty:
+        type: integer
+    type: object
+  controllers.CartUpdateInput:
+    properties:
+      qty:
+        type: integer
+    type: object
   controllers.FeedbackInput:
     properties:
       feedback:
@@ -324,7 +336,7 @@ paths:
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/model.Cart'
+          $ref: '#/definitions/controllers.CartInput'
       produces:
       - application/json
       responses:
@@ -355,15 +367,20 @@ paths:
       summary: delete cart item.
       tags:
       - Cart
-    post:
+    put:
       description: update cart belongs to the user who is currently logged in.
       parameters:
+      - description: cartId
+        in: path
+        name: cartId
+        required: true
+        type: string
       - description: cart's data
         in: body
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/model.Cart'
+          $ref: '#/definitions/controllers.CartUpdateInput'
       produces:
       - application/json
       responses:

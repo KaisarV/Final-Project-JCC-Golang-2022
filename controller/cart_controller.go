@@ -2,12 +2,22 @@ package controllers
 
 import (
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 
 	model "Final-Project-JCC-Golang-2022/model"
 )
+
+type CartInput struct {
+	ProductId int `json:"ProductId"`
+	Quantity  int `json:"qty"`
+}
+
+type CartUpdateInput struct {
+	Quantity int `json:"qty"`
+}
 
 // GetAllMyCart godoc
 // @Summary Get all cart items.
@@ -100,7 +110,7 @@ func DeleteMyCart(c *gin.Context) {
 // @Description insert product to cart belongs to the user who is currently logged in.
 // @Tags Cart
 // @Produce json
-// @Param Body body model.Cart true "cart's data"
+// @Param Body body CartInput true "cart's data"
 // @Success 200 {object}  model.CartResponse
 // @Router /cart [POST]
 func InsertMyCart(c *gin.Context) {
@@ -109,11 +119,38 @@ func InsertMyCart(c *gin.Context) {
 
 	var cart model.Cart
 	var response model.CartResponse
+	var input CartInput
+	if c.Request.Header.Get("Content-Type") == "application/json" {
+		if err := c.ShouldBindJSON(&input); err != nil {
+			response.Status = 400
+			response.Message = err.Error()
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusOK, response)
+			return
+		}
+	} else {
+		input.Quantity, _ = strconv.Atoi(c.PostForm("qty"))
+		input.ProductId, _ = strconv.Atoi(c.PostForm("productid"))
+	}
 
 	_, cart.UserId, _, _ = validateTokenFromCookies(c)
-	cart.Quantity, _ = strconv.Atoi(c.PostForm("qty"))
-	cart.ProductId, _ = strconv.Atoi(c.PostForm("productId"))
+	cart.Quantity = input.Quantity
+	cart.ProductId = input.ProductId
 
+	rows, _ := db.Query("SELECT * FROM carts WHERE User_Id = ? AND Product_Id = ?", cart.UserId, cart.ProductId)
+
+	i := 0
+	for rows.Next() {
+		i++
+	}
+
+	if i != 0 {
+		response.Status = 400
+		response.Message = "You already add this product to your cart"
+		c.Header("Content-Type", "application/json")
+		c.JSON(response.Status, response)
+		return
+	}
 	if cart.Quantity == 0 {
 		response.Status = 400
 		response.Message = "Please Insert cart's quantity"
@@ -154,18 +191,31 @@ func InsertMyCart(c *gin.Context) {
 // @Description update cart belongs to the user who is currently logged in.
 // @Tags Cart
 // @Produce json
-// @Param Body body model.Cart true "cart's data"
+// @Param cartId path string true "cartId"
+// @Param Body body CartUpdateInput true "cart's data"
 // @Success 200 {object} model.ErrorResponse
-// @Router /cart/{cartId} [POST]
+// @Router /cart/{cartId} [PUT]
 func UpdateMyCart(c *gin.Context) {
 	db := connect()
 
 	var cart model.Cart
 	var response model.ErrorResponse
+	var input CartUpdateInput
+	if c.Request.Header.Get("Content-Type") == "application/json" {
+		if err := c.ShouldBindJSON(&input); err != nil {
+			response.Status = 400
+			response.Message = err.Error()
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusOK, response)
+			return
+		}
+	} else {
+		input.Quantity, _ = strconv.Atoi(c.PostForm("qty"))
+	}
 
 	_, cart.UserId, _, _ = validateTokenFromCookies(c)
 	cart.ID, _ = strconv.Atoi(c.Param("cartId"))
-	cart.Quantity, _ = strconv.Atoi(c.PostForm("qty"))
+	cart.Quantity = input.Quantity
 
 	rows, _ := db.Query("SELECT Quantity FROM carts WHERE Id = ? AND User_Id = ?", cart.ID, cart.UserId)
 	var prevDatas []model.Cart
