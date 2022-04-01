@@ -8,6 +8,13 @@ import (
 	model "Final-Project-JCC-Golang-2022/model"
 )
 
+// GetAllFeedbacks godoc
+// @Summary Get all user feedback.
+// @Description get a list of feedback from all users, only admin can use it.
+// @Tags Feedbacks
+// @Produce json
+// @Success 200 {object} model.FeedbacksResponse
+// @Router /feedbacks/all [GET]
 func GetAllFeedbacks(c *gin.Context) {
 
 	db := connect()
@@ -47,6 +54,13 @@ func GetAllFeedbacks(c *gin.Context) {
 	c.JSON(response.Status, response)
 }
 
+// GetAllMyFeedbacks godoc
+// @Summary Get user feedback.
+// @Description get a list of feedback from logged in users.
+// @Tags Feedbacks
+// @Produce json
+// @Success 200 {object} model.FeedbacksResponse
+// @Router /feedbacks [GET]
 func GetAllMyFeedbacks(c *gin.Context) {
 
 	db := connect()
@@ -88,6 +102,14 @@ func GetAllMyFeedbacks(c *gin.Context) {
 	c.JSON(response.Status, response)
 }
 
+// InsertMyFeedbacks godoc
+// @Summary insert feedback.
+// @Description added feedback about the app so admin can see it.
+// @Tags Feedbacks
+// @Produce json
+// @Param Body body model.Feedback true "feedback's data"
+// @Success 200 {object}  model.FeedbackResponse
+// @Router /feedbacks [POST]
 func InsertMyFeedbacks(c *gin.Context) {
 
 	db := connect()

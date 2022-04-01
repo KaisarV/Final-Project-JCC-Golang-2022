@@ -9,6 +9,13 @@ import (
 	model "Final-Project-JCC-Golang-2022/model"
 )
 
+// GetAllMyCart godoc
+// @Summary Get all cart items.
+// @Description display all cart items of users who are currently logged in.
+// @Tags Cart
+// @Produce json
+// @Success 200 {object} model.CartsResponse
+// @Router /cart [GET]
 func GetAllMyCart(c *gin.Context) {
 
 	db := connect()
@@ -49,6 +56,14 @@ func GetAllMyCart(c *gin.Context) {
 	c.JSON(response.Status, response)
 }
 
+// DeleteMyCart godoc
+// @Summary delete cart item.
+// @Description delete display all cart items of users who are currently logged in.
+// @Tags Cart
+// @Produce json
+// @Param cartId path string true "cartId"
+// @Success 200 {object} model.ErrorResponse
+// @Router /cart/{cartId} [delete]
 func DeleteMyCart(c *gin.Context) {
 	db := connect()
 	defer db.Close()
@@ -80,6 +95,14 @@ func DeleteMyCart(c *gin.Context) {
 	c.JSON(response.Status, response)
 }
 
+// InsertMyCart godoc
+// @Summary insert cart.
+// @Description insert product to cart belongs to the user who is currently logged in.
+// @Tags Cart
+// @Produce json
+// @Param Body body model.Cart true "cart's data"
+// @Success 200 {object}  model.CartResponse
+// @Router /cart [POST]
 func InsertMyCart(c *gin.Context) {
 
 	db := connect()
@@ -126,6 +149,14 @@ func InsertMyCart(c *gin.Context) {
 
 }
 
+// UpdateMyCart godoc
+// @Summary update cart.
+// @Description update cart belongs to the user who is currently logged in.
+// @Tags Cart
+// @Produce json
+// @Param Body body model.Cart true "cart's data"
+// @Success 200 {object} model.ErrorResponse
+// @Router /cart/{cartId} [POST]
 func UpdateMyCart(c *gin.Context) {
 	db := connect()
 

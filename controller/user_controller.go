@@ -9,7 +9,7 @@ import (
 	model "Final-Project-JCC-Golang-2022/model"
 )
 
-type userInput struct {
+type InputUser struct {
 	Name     string `json:"name"`
 	Phone    string `json:"phone"`
 	Email    string `json:"email"`
@@ -17,7 +17,7 @@ type userInput struct {
 	Address  string `json:"address"`
 }
 
-type userLogin struct {
+type InputLogin struct {
 	Email    string `json:"email"`
 	Password string `json:"password,omitempty"`
 }
@@ -81,7 +81,7 @@ func GetAllUsers(c *gin.Context) {
 // @Produce json
 // @Param id path string true "id"
 // @Success 200 {object} model.ErrorResponse
-// @Router /users/{id} [delete]
+// @Router /user/{id} [delete]
 func DeleteUser(c *gin.Context) {
 	db := connect()
 	defer db.Close()
@@ -117,23 +117,33 @@ func DeleteUser(c *gin.Context) {
 // @Description insert user and it use for register user.
 // @Tags Users
 // @Produce json
-// @Param Body body model.User true "User's data"
+// @Param Body body InputUser true "User's data"
 // @Success 200 {object} model.UserResponse
 // @Router /register [POST]
 func InsertUser(c *gin.Context) {
 
 	db := connect()
 
-	var user model.User
+	var input InputUser
 	var response model.UserResponse
+	var user model.User
+	if c.Request.Header.Get("Content-Type") == "application/json" {
+		if err := c.ShouldBindJSON(&input); err != nil {
+			response.Status = 400
+			response.Message = err.Error()
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusOK, response)
+			return
+		}
+	} else {
+		input.Name = c.PostForm("name")
+		input.Phone = c.PostForm("phone")
+		input.Email = c.PostForm("email")
+		input.Password = c.PostForm("password")
+		input.Address = c.PostForm("address")
+	}
 
-	user.Name = c.PostForm("name")
-	user.Phone = c.PostForm("phone")
-	user.Email = c.PostForm("email")
-	user.Password = c.PostForm("password")
-	user.Address = c.PostForm("address")
-
-	if user.Name == "" {
+	if input.Name == "" {
 		response.Status = 400
 		response.Message = "Please Insert User's Name"
 		c.Header("Content-Type", "application/json")
@@ -141,7 +151,7 @@ func InsertUser(c *gin.Context) {
 		return
 	}
 
-	if user.Phone == "" {
+	if input.Phone == "" {
 		response.Status = 400
 		response.Message = "Please Insert User's Phone"
 		c.Header("Content-Type", "application/json")
@@ -149,7 +159,7 @@ func InsertUser(c *gin.Context) {
 		return
 	}
 
-	if user.Address == "" {
+	if input.Address == "" {
 		response.Status = 400
 		response.Message = "Please Insert User's Address"
 		c.Header("Content-Type", "application/json")
@@ -157,7 +167,7 @@ func InsertUser(c *gin.Context) {
 		return
 	}
 
-	if user.Email == "" {
+	if input.Email == "" {
 		response.Status = 400
 		response.Message = "Please Insert User's Email"
 		c.Header("Content-Type", "application/json")
@@ -165,13 +175,19 @@ func InsertUser(c *gin.Context) {
 		return
 	}
 
-	if user.Password == "" {
+	if input.Password == "" {
 		response.Status = 400
 		response.Message = "Please Insert User's Password"
 		c.Header("Content-Type", "application/json")
 		c.JSON(response.Status, response)
 		return
 	}
+
+	user.Name = input.Name
+	user.Phone = input.Phone
+	user.Email = input.Email
+	user.Password = input.Password
+	user.Address = input.Address
 
 	res, errQuery := db.Exec("INSERT INTO users(Name, Phone,  Email, Password,Address) VALUES(?, ?, ?, ?, ?)", user.Name, user.Phone, user.Email, user.Password, user.Address)
 
@@ -197,22 +213,37 @@ func InsertUser(c *gin.Context) {
 // @Description change the data of the user who is currently logged in.
 // @Tags Users
 // @Produce json
-// @Param id path string true "id"
-// @Param Body body userInput true "User's data"
+// @Param Body body InputUser true "User's data"
 // @Success 200 {object} model.UserResponse
-// @Router /users [PUT]
+// @Router /user [PUT]
 func UpdateUsers(c *gin.Context) {
 	db := connect()
 
 	var user model.User
 	var response model.UserResponse
+	var input InputUser
+	if c.Request.Header.Get("Content-Type") == "application/json" {
+		if err := c.ShouldBindJSON(&input); err != nil {
+			response.Status = 400
+			response.Message = err.Error()
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusOK, response)
+			return
+		}
+	} else {
+		input.Name = c.PostForm("name")
+		input.Phone = c.PostForm("phone")
+		input.Email = c.PostForm("email")
+		input.Password = c.PostForm("password")
+		input.Address = c.PostForm("address")
+	}
 
 	userId, _ := getCurrentUserId(c)
-	user.Name = c.PostForm("name")
-	user.Phone = c.PostForm("phone")
-	user.Email = c.PostForm("email")
-	user.Password = c.PostForm("password")
-	user.Address = c.PostForm("address")
+	user.Name = input.Name
+	user.Phone = input.Phone
+	user.Email = input.Email
+	user.Password = input.Password
+	user.Address = input.Address
 
 	rows, _ := db.Query("SELECT * FROM users WHERE Id = ?", userId)
 	var prevDatas []model.User
@@ -273,15 +304,32 @@ func UpdateUsers(c *gin.Context) {
 // @Description login for registered users.
 // @Tags Users
 // @Produce json
-// @Param Body body userLogin true "User's login data"
+// @Param Body body InputLogin true "User's login data"
+// @Success 200 {object} model.ErrorResponse
 // @Router /login [POST]
 func UserLogin(c *gin.Context) {
 	db := connect()
 	defer db.Close()
 	var response model.ErrorResponse
 
-	email := c.PostForm("email")
-	password := c.PostForm("password")
+	var input InputLogin
+
+	if c.Request.Header.Get("Content-Type") == "application/json" {
+
+		if err := c.ShouldBindJSON(&input); err != nil {
+			response.Status = 400
+			response.Message = err.Error()
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusOK, response)
+			return
+		}
+	} else {
+		input.Email = c.PostForm("email")
+		input.Password = c.PostForm("password")
+	}
+
+	email := input.Email
+	password := input.Password
 
 	if email == "" || password == "" {
 		response.Status = 400

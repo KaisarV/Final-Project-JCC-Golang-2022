@@ -104,7 +104,7 @@ func DeleteMyStore(c *gin.Context) {
 // @Description added the store of the currently logged in user.
 // @Tags Stores
 // @Produce json
-// @Param Body body userInput true "store's data"
+// @Param Body body model.Store true "store's data"
 // @Success 200 {object} model.StoreResponse
 // @Router /store [POST]
 func InsertMyStore(c *gin.Context) {

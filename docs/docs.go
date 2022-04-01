@@ -25,6 +25,182 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/cart": {
+            "get": {
+                "description": "display all cart items of users who are currently logged in.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Get all cart items.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.CartsResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "insert product to cart belongs to the user who is currently logged in.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "insert cart.",
+                "parameters": [
+                    {
+                        "description": "cart's data",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Cart"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.CartResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/cart/{cartId}": {
+            "post": {
+                "description": "update cart belongs to the user who is currently logged in.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "update cart.",
+                "parameters": [
+                    {
+                        "description": "cart's data",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Cart"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "delete display all cart items of users who are currently logged in.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "delete cart item.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "cartId",
+                        "name": "cartId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/feedbacks": {
+            "get": {
+                "description": "get a list of feedback from logged in users.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feedbacks"
+                ],
+                "summary": "Get user feedback.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.FeedbacksResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "added feedback about the app so admin can see it.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feedbacks"
+                ],
+                "summary": "insert feedback.",
+                "parameters": [
+                    {
+                        "description": "feedback's data",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Feedback"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.FeedbackResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/feedbacks/all": {
+            "get": {
+                "description": "get a list of feedback from all users, only admin can use it.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feedbacks"
+                ],
+                "summary": "Get all user feedback.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.FeedbacksResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/login": {
             "post": {
                 "description": "login for registered users.",
@@ -42,11 +218,18 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controllers.userLogin"
+                            "$ref": "#/definitions/controllers.InputLogin"
                         }
                     }
                 ],
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
             }
         },
         "/logout": {
@@ -64,14 +247,14 @@ const docTemplate = `{
         },
         "/product": {
             "post": {
-                "description": "delete products sold by logged in users.",
+                "description": "insert products sold by logged in users.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Products"
                 ],
-                "summary": "delete prodduct.",
+                "summary": "insert product.",
                 "parameters": [
                     {
                         "description": "product's data",
@@ -195,7 +378,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.User"
+                            "$ref": "#/definitions/controllers.InputUser"
                         }
                     }
                 ],
@@ -376,7 +559,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controllers.userInput"
+                            "$ref": "#/definitions/model.Store"
                         }
                     }
                 ],
@@ -477,25 +660,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users": {
-            "get": {
-                "description": "Display all registered users.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Get all users.",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.UsersResponse"
-                        }
-                    }
-                }
-            },
+        "/user": {
             "put": {
                 "description": "change the data of the user who is currently logged in.",
                 "produces": [
@@ -507,19 +672,12 @@ const docTemplate = `{
                 "summary": "update user.",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
                         "description": "User's data",
                         "name": "Body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controllers.userInput"
+                            "$ref": "#/definitions/controllers.InputUser"
                         }
                     }
                 ],
@@ -533,7 +691,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/{id}": {
+        "/user/{id}": {
             "delete": {
                 "description": "Delete user by id and admin only can use it.",
                 "produces": [
@@ -561,10 +719,41 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/users": {
+            "get": {
+                "description": "Display all registered users.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get all users.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.UsersResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
-        "controllers.userInput": {
+        "controllers.InputLogin": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.InputUser": {
             "type": "object",
             "properties": {
                 "address": {
@@ -584,20 +773,105 @@ const docTemplate = `{
                 }
             }
         },
-        "controllers.userLogin": {
+        "model.Cart": {
             "type": "object",
             "properties": {
-                "email": {
+                "ProductId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "qty": {
+                    "type": "integer"
+                },
+                "userid": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.CartResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.Cart"
+                },
+                "message": {
                     "type": "string"
                 },
-                "password": {
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.CartsResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Cart"
+                    }
+                },
+                "message": {
                     "type": "string"
+                },
+                "status": {
+                    "type": "integer"
                 }
             }
         },
         "model.ErrorResponse": {
             "type": "object",
             "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Feedback": {
+            "type": "object",
+            "properties": {
+                "Date": {
+                    "type": "string"
+                },
+                "feedback": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "userid": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.FeedbackResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.Feedback"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.FeedbacksResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Feedback"
+                    }
+                },
                 "message": {
                     "type": "string"
                 },

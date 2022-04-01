@@ -1,5 +1,12 @@
 definitions:
-  controllers.userInput:
+  controllers.InputLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  controllers.InputUser:
     properties:
       address:
         type: string
@@ -12,15 +19,70 @@ definitions:
       phone:
         type: string
     type: object
-  controllers.userLogin:
+  model.Cart:
     properties:
-      email:
+      ProductId:
+        type: integer
+      id:
+        type: integer
+      qty:
+        type: integer
+      userid:
+        type: integer
+    type: object
+  model.CartResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.Cart'
+      message:
         type: string
-      password:
+      status:
+        type: integer
+    type: object
+  model.CartsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.Cart'
+        type: array
+      message:
         type: string
+      status:
+        type: integer
     type: object
   model.ErrorResponse:
     properties:
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  model.Feedback:
+    properties:
+      Date:
+        type: string
+      feedback:
+        type: string
+      id:
+        type: integer
+      userid:
+        type: integer
+    type: object
+  model.FeedbackResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.Feedback'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  model.FeedbacksResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.Feedback'
+        type: array
       message:
         type: string
       status:
@@ -205,6 +267,123 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
 paths:
+  /cart:
+    get:
+      description: display all cart items of users who are currently logged in.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.CartsResponse'
+      summary: Get all cart items.
+      tags:
+      - Cart
+    post:
+      description: insert product to cart belongs to the user who is currently logged
+        in.
+      parameters:
+      - description: cart's data
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Cart'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.CartResponse'
+      summary: insert cart.
+      tags:
+      - Cart
+  /cart/{cartId}:
+    delete:
+      description: delete display all cart items of users who are currently logged
+        in.
+      parameters:
+      - description: cartId
+        in: path
+        name: cartId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: delete cart item.
+      tags:
+      - Cart
+    post:
+      description: update cart belongs to the user who is currently logged in.
+      parameters:
+      - description: cart's data
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Cart'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: update cart.
+      tags:
+      - Cart
+  /feedbacks:
+    get:
+      description: get a list of feedback from logged in users.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.FeedbacksResponse'
+      summary: Get user feedback.
+      tags:
+      - Feedbacks
+    post:
+      description: added feedback about the app so admin can see it.
+      parameters:
+      - description: feedback's data
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Feedback'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.FeedbackResponse'
+      summary: insert feedback.
+      tags:
+      - Feedbacks
+  /feedbacks/all:
+    get:
+      description: get a list of feedback from all users, only admin can use it.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.FeedbacksResponse'
+      summary: Get all user feedback.
+      tags:
+      - Feedbacks
   /login:
     post:
       description: login for registered users.
@@ -214,10 +393,14 @@ paths:
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/controllers.userLogin'
+          $ref: '#/definitions/controllers.InputLogin'
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
       summary: login user.
       tags:
       - Users
@@ -232,7 +415,7 @@ paths:
       - Users
   /product:
     post:
-      description: delete products sold by logged in users.
+      description: insert products sold by logged in users.
       parameters:
       - description: product's data
         in: body
@@ -247,7 +430,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.ProductResponse'
-      summary: delete prodduct.
+      summary: insert product.
       tags:
       - Products
   /product/{productid}:
@@ -315,7 +498,7 @@ paths:
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/model.User'
+          $ref: '#/definitions/controllers.InputUser'
       produces:
       - application/json
       responses:
@@ -428,7 +611,7 @@ paths:
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/controllers.userInput'
+          $ref: '#/definitions/model.Store'
       produces:
       - application/json
       responses:
@@ -503,33 +686,16 @@ paths:
       summary: insert transaction.
       tags:
       - Transactions
-  /users:
-    get:
-      description: Display all registered users.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.UsersResponse'
-      summary: Get all users.
-      tags:
-      - Users
+  /user:
     put:
       description: change the data of the user who is currently logged in.
       parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
       - description: User's data
         in: body
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/controllers.userInput'
+          $ref: '#/definitions/controllers.InputUser'
       produces:
       - application/json
       responses:
@@ -540,7 +706,7 @@ paths:
       summary: update user.
       tags:
       - Users
-  /users/{id}:
+  /user/{id}:
     delete:
       description: Delete user by id and admin only can use it.
       parameters:
@@ -557,6 +723,19 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: delete user.
+      tags:
+      - Users
+  /users:
+    get:
+      description: Display all registered users.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UsersResponse'
+      summary: Get all users.
       tags:
       - Users
 swagger: "2.0"

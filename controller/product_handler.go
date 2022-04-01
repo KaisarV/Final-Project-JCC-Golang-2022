@@ -101,8 +101,8 @@ func DeleteMyProduct(c *gin.Context) {
 }
 
 // InsertMyProduct godoc
-// @Summary delete prodduct.
-// @Description delete products sold by logged in users.
+// @Summary insert product.
+// @Description insert products sold by logged in users.
 // @Tags Products
 // @Produce json
 // @Param Body body model.Product true "product's data"
