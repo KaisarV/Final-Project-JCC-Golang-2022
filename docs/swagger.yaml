@@ -19,6 +19,13 @@ definitions:
       phone:
         type: string
     type: object
+  controllers.StoreInput:
+    properties:
+      address:
+        type: string
+      name:
+        type: string
+    type: object
   controllers.TransactionInput:
     properties:
       productId:
@@ -618,7 +625,7 @@ paths:
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/model.Store'
+          $ref: '#/definitions/controllers.StoreInput'
       produces:
       - application/json
       responses:
@@ -637,7 +644,7 @@ paths:
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/model.Store'
+          $ref: '#/definitions/controllers.StoreInput'
       produces:
       - application/json
       responses:

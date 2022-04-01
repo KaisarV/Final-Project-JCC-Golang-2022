@@ -518,7 +518,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Store"
+                            "$ref": "#/definitions/controllers.StoreInput"
                         }
                     }
                 ],
@@ -547,7 +547,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Store"
+                            "$ref": "#/definitions/controllers.StoreInput"
                         }
                     }
                 ],
@@ -759,6 +759,17 @@
                     "type": "string"
                 },
                 "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.StoreInput": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }

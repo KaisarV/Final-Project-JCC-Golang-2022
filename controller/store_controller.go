@@ -2,11 +2,17 @@ package controllers
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 
 	model "Final-Project-JCC-Golang-2022/model"
 )
+
+type StoreInput struct {
+	Name    string `json:"name"`
+	Address string `json:"address"`
+}
 
 // GetAllStores godoc
 // @Summary Get all stores.
@@ -104,7 +110,7 @@ func DeleteMyStore(c *gin.Context) {
 // @Description added the store of the currently logged in user.
 // @Tags Stores
 // @Produce json
-// @Param Body body model.Store true "store's data"
+// @Param Body body StoreInput true "store's data"
 // @Success 200 {object} model.StoreResponse
 // @Router /store [POST]
 func InsertMyStore(c *gin.Context) {
@@ -115,6 +121,7 @@ func InsertMyStore(c *gin.Context) {
 	var response model.StoreResponse
 	var userType int
 	var userName string
+	var input StoreInput
 	_, store.UserId, userName, userType = validateTokenFromCookies(c)
 
 	if userType == 2 {
@@ -125,8 +132,21 @@ func InsertMyStore(c *gin.Context) {
 		return
 	}
 
-	store.Name = c.PostForm("name")
-	store.Address = c.PostForm("address")
+	if c.Request.Header.Get("Content-Type") == "application/json" {
+		if err := c.ShouldBindJSON(&input); err != nil {
+			response.Status = 400
+			response.Message = err.Error()
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusOK, response)
+			return
+		}
+	} else {
+		input.Name = c.PostForm("name")
+		input.Address = c.PostForm("address")
+	}
+
+	store.Name = input.Name
+	store.Address = input.Address
 
 	if store.Name == "" {
 		response.Status = 400
@@ -170,7 +190,7 @@ func InsertMyStore(c *gin.Context) {
 // @Description update the store of the currently logged in user.
 // @Tags Stores
 // @Produce json
-// @Param Body body model.Store true "store's data"
+// @Param Body body StoreInput true "store's data"
 // @Success 200 {object} model.StoreResponse
 // @Router /store [PUT]
 func UpdateMyStore(c *gin.Context) {
@@ -178,10 +198,23 @@ func UpdateMyStore(c *gin.Context) {
 
 	var store model.Store
 	var response model.StoreResponse
+	var input StoreInput
 
+	if c.Request.Header.Get("Content-Type") == "application/json" {
+		if err := c.ShouldBindJSON(&input); err != nil {
+			response.Status = 400
+			response.Message = err.Error()
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusOK, response)
+			return
+		}
+	} else {
+		input.Name = c.PostForm("name")
+		input.Address = c.PostForm("address")
+	}
 	_, userId, _, _ := validateTokenFromCookies(c)
-	store.Name = c.PostForm("name")
-	store.Address = c.PostForm("address")
+	store.Name = input.Name
+	store.Address = input.Address
 
 	rows, _ := db.Query("SELECT * FROM stores WHERE User_Id = ?", userId)
 	var prevDatas []model.Store
