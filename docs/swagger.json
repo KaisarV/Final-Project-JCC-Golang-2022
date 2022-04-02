@@ -659,14 +659,14 @@
         },
         "/user": {
             "put": {
-                "description": "change the data of the user who is currently logged in.",
+                "description": "change the data of the user who is currently logged in, include update password.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Users"
                 ],
-                "summary": "update user.",
+                "summary": "update profile.",
                 "parameters": [
                     {
                         "description": "User's data",

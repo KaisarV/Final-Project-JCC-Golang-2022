@@ -16,12 +16,14 @@ const CONFIG_AUTH_EMAIL = "nomen.test123@gmail.com"
 const CONFIG_AUTH_PASSWORD = "tes12345"
 
 type BodylinkEmail struct {
-	Name string
+	Name  string
+	Email string
 }
 
 func SendMail(email string, name string) {
 	templateData := BodylinkEmail{
-		Name: name,
+		Name:  name,
+		Email: email,
 	}
 
 	result, _ := ParseTemplate("gomail/register.html", templateData)

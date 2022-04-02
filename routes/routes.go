@@ -27,7 +27,7 @@ func SetupRouter() *gin.Engine {
 	basicUser := router.Group("/")
 	basicUser.Use(controller.Authenticate(1))
 	{
-		basicUser.PUT("/user", controller.UpdateUsers)
+		basicUser.PUT("/user", controller.UpdateMyProfile)
 		basicUser.POST("/store", controller.InsertMyStore)
 
 		//Cart

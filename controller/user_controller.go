@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	gomail "Final-Project-JCC-Golang-2022/gomail"
 	model "Final-Project-JCC-Golang-2022/model"
 )
 
@@ -122,10 +123,21 @@ func DeleteUser(c *gin.Context) {
 // @Router /register [POST]
 func InsertUser(c *gin.Context) {
 
+	_, userId, _, _ := validateTokenFromCookies(c)
+	var response model.UserResponse
+
+	if userId != -1 {
+		response.Status = 400
+		response.Message = "You are already logged in"
+		c.Header("Content-Type", "application/json")
+		c.JSON(http.StatusOK, response)
+		return
+	}
+
 	db := connect()
 
 	var input InputUser
-	var response model.UserResponse
+
 	var user model.User
 	if c.Request.Header.Get("Content-Type") == "application/json" {
 		if err := c.ShouldBindJSON(&input); err != nil {
@@ -209,6 +221,7 @@ func InsertUser(c *gin.Context) {
 	id, _ := res.LastInsertId()
 
 	if errQuery == nil {
+		gomail.SendMail(user.Email, user.Name)
 		response.Status = 200
 		response.Message = "Success"
 		user.UserType = 1
@@ -223,15 +236,15 @@ func InsertUser(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-// UpdateUser godoc
-// @Summary update user.
-// @Description change the data of the user who is currently logged in.
+// UpdateMyProfile godoc
+// @Summary update profile.
+// @Description change the data of the user who is currently logged in, include update password.
 // @Tags Users
 // @Produce json
 // @Param Body body InputUser true "User's data"
 // @Success 200 {object} model.UserResponse
 // @Router /user [PUT]
-func UpdateUsers(c *gin.Context) {
+func UpdateMyProfile(c *gin.Context) {
 	db := connect()
 
 	var user model.User

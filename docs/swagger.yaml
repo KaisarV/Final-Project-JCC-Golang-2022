@@ -741,7 +741,8 @@ paths:
       - Transactions
   /user:
     put:
-      description: change the data of the user who is currently logged in.
+      description: change the data of the user who is currently logged in, include
+        update password.
       parameters:
       - description: User's data
         in: body
@@ -756,7 +757,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.UserResponse'
-      summary: update user.
+      summary: update profile.
       tags:
       - Users
   /user/{id}:
