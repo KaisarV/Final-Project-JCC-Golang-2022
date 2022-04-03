@@ -36,7 +36,7 @@ func Connect() *sql.DB {
 		return db
 
 	} else {
-		db, err := sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/db_tes_jcc?charset=utf8mb4&parseTime=True&loc=Local")
+		db, err := sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/jcc_ecommerce?charset=utf8mb4&parseTime=True&loc=Local")
 
 		// username := "root"
 		// password := ""
