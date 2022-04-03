@@ -1,1 +1,1 @@
-web: bin/ecommerce-jcc
+web: bin/Final-Project-JCC-Golang-2022
