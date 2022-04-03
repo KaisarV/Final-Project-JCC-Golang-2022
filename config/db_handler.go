@@ -3,6 +3,7 @@ package controllers
 import (
 	"Final-Project-JCC-Golang-2022/utils"
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
 
@@ -23,7 +24,10 @@ func Connect() *sql.DB {
 		port := os.Getenv("DATABASE_PORT")
 		database := os.Getenv("DATABASE_NAME")
 
-		psqlInfo := "host=" + host + " user=" + username + " password=" + password + " dbname=" + database + " port=" + port + " sslmode=require"
+		psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
+			"password=%s dbname=%s sslmode=disable",
+			host, port, username, password, database)
+
 		db, err := sql.Open("postgres", psqlInfo)
 		if err != nil {
 			panic(err)
