@@ -15,7 +15,7 @@ import (
 
 func Connect() *sql.DB {
 	environment := utils.Getenv("ENVIRONMENT", "development")
-
+	fmt.Println("aaaaaaaaaaaaaaaaaaaaaaaaa" + environment)
 	if environment == "production" {
 		username := os.Getenv("DATABASE_USERNAME")
 		password := os.Getenv("DATABASE_PASSWORD")
