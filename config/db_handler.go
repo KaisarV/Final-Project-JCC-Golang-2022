@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
 
 	model "Final-Project-JCC-Golang-2022/model"
 
@@ -18,13 +17,13 @@ func Connect() *sql.DB {
 	environment := utils.Getenv("ENVIRONMENT", "development")
 
 	if environment == "production" {
-		username := os.Getenv("DATABASE_USERNAME")
-		password := os.Getenv("DATABASE_PASSWORD")
-		host := os.Getenv("DATABASE_HOST")
-		port := os.Getenv("DATABASE_PORT")
-		database := os.Getenv("DATABASE_NAME")
+		username := "evyruldwjcspkh"
+		password := "4f7dbdf0e9e57f0d97f9f2e162fac8eca230840eedf71d0625b6817f6e622db8"
+		host := "ec2-54-157-79-121.compute-1.amazonaws.com"
+		port := 5432
+		database := "daga015a6rd6v8"
 
-		psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
+		psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 			"password=%s dbname=%s sslmode=disable",
 			host, port, username, password, database)
 
