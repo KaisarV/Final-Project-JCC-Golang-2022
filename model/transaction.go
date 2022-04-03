@@ -15,7 +15,7 @@ type TransactionsResponse struct {
 }
 
 type TransactionResponse struct {
-	Status  int         `json:"status"`
+	Status  int         `json:"status" gorm:"primary_key"`
 	Message string      `json:"message"`
 	Data    Transaction `json:"data,omitempty"`
 }

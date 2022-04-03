@@ -1,7 +1,7 @@
 package model
 
 type ProductReview struct {
-	ID        int    `json:"id,omitempty"`
+	ID        int    `json:"id,omitempty" gorm:"primary_key"`
 	UserId    int    `json:"userid,omitempty"`
 	ProductId int    `json:"productid,omitempty"`
 	Review    string `json:"review"`
