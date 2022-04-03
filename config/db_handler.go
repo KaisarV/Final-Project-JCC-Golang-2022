@@ -6,7 +6,11 @@ import (
 	"log"
 	"os"
 
+	model "Final-Project-JCC-Golang-2022/model"
+
 	_ "github.com/go-sql-driver/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 func Connect() *sql.DB {
@@ -24,6 +28,9 @@ func Connect() *sql.DB {
 		if err != nil {
 			panic(err)
 		}
+
+		db2, _ := gorm.Open(mysql.Open(psqlInfo), &gorm.Config{})
+		db2.AutoMigrate(&model.User{}, &model.Transaction{}, &model.Store{}, &model.Cart{}, &model.Product{}, &model.ProductReview{}, &model.Feedback{})
 
 		return db
 
