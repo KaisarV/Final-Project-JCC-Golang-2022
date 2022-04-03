@@ -1,7 +1,7 @@
 package model
 
 type Store struct {
-	ID      int    `json:"id" gorm:"primary_key"`
+	ID      int    `json:"id"`
 	UserId  int    `json:"userId,omitempty"`
 	Name    string `json:"name"`
 	Address string `json:"address"`

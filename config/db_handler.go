@@ -7,9 +7,8 @@ import (
 	"log"
 	"os"
 
-	model "Final-Project-JCC-Golang-2022/model"
-
 	_ "github.com/go-sql-driver/mysql"
+	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -25,7 +24,7 @@ func Connect() *sql.DB {
 		database := os.Getenv("DATABASE_NAME")
 
 		psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
-			"password=%s dbname=%s sslmode=disable",
+			"password=%s dbname=%s sslmode=require",
 			host, port, username, password, database)
 
 		db, err := sql.Open("postgres", psqlInfo)
@@ -34,12 +33,22 @@ func Connect() *sql.DB {
 		}
 
 		db2, _ := gorm.Open(postgres.Open(psqlInfo), &gorm.Config{})
-		db2.AutoMigrate(&model.User{}, &model.Transaction{}, &model.Store{}, &model.Cart{}, &model.Product{}, &model.ProductReview{}, &model.Feedback{})
+
+		db2.AutoMigrate(User{}, Transaction{}, Store{}, Cart{}, Product{}, ProductReview{}, Feedback{})
 
 		return db
 
 	} else {
-		db, err := sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/jcc_ecommerce?charset=utf8mb4&parseTime=True&loc=Local")
+		db, err := sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/db_tes_jcc?charset=utf8mb4&parseTime=True&loc=Local")
+
+		username := "root"
+		password := ""
+		host := "tcp(127.0.0.1:3306)"
+		database := "db_tes_jcc"
+
+		dsn := fmt.Sprintf("%v:%v@%v/%v?charset=utf8mb4&parseTime=True&loc=Local", username, password, host, database)
+		db2, _ := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		db2.AutoMigrate(&User{}, &Transaction{}, &Store{}, &Cart{}, &Product{}, &ProductReview{}, &Feedback{})
 
 		if err != nil {
 			log.Fatal(err)
@@ -50,4 +59,60 @@ func Connect() *sql.DB {
 		return db
 	}
 
+}
+
+type User struct {
+	ID        uint   `gorm:"primary_key" json:"id"`
+	Name      string `json:"name"`
+	Phone     string `json:"phone"`
+	Email     string `json:"email"`
+	Password  string `json:"password,omitempty"`
+	Address   string `json:"address"`
+	User_Type int    `json:"usertype"`
+}
+
+type Transaction struct {
+	ID         uint   `gorm:"primary_key" json:"id"`
+	User_Id    int    `json:"userId"`
+	Product_Id int    `json:"productId"`
+	Date       string `json:"date"`
+	Quantity   int    `json:"qty"`
+}
+
+type Store struct {
+	ID      uint   `gorm:"primary_key" json:"id"`
+	User_Id int    `json:"userId,omitempty"`
+	Name    string `json:"name"`
+	Address string `json:"address"`
+}
+
+type Product struct {
+	ID       uint   `gorm:"primary_key" json:"id"`
+	Name     string `json:"name"`
+	Category string `json:"category"`
+	Price    int    `json:"price"`
+	Store_Id int    `json:"storeId"`
+}
+
+type ProductReview struct {
+	ID        uint   `gorm:"primary_key" json:"id"`
+	User_Id   int    `json:"userid,omitempty"`
+	ProductId int    `json:"productid,omitempty"`
+	Review    string `json:"review"`
+	Rating    int    `json:"rating,omitempty"`
+	Date      string `json:"Date,omitempty"`
+}
+
+type Feedback struct {
+	ID       uint   `gorm:"primary_key" json:"id"`
+	User_Id  int    `json:"userid,omitempty"`
+	Feedback string `json:"feedback"`
+	Date     string `json:"Date,omitempty"`
+}
+
+type Cart struct {
+	ID        uint `gorm:"primary_key" json:"id"`
+	User_Id   int  `json:"userid"`
+	ProductId int  `json:"ProductId"`
+	Quantity  int  `json:"qty"`
 }

@@ -1,7 +1,7 @@
 package model
 
 type Feedback struct {
-	ID       int    `json:"id,omitempty" gorm:"primary_key"`
+	ID       int    `json:"id,omitempty"`
 	UserId   int    `json:"userid,omitempty"`
 	Feedback string `json:"feedback"`
 	Date     string `json:"Date,omitempty"`
