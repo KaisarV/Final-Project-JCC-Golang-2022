@@ -54,6 +54,6 @@ require (
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gorm.io/driver/mysql v1.3.3 // indirect
-	gorm.io/driver/postgres v1.3.2 // indirect
+	gorm.io/driver/postgres v1.3.3 // indirect
 	gorm.io/gorm v1.23.4 // indirect
 )
