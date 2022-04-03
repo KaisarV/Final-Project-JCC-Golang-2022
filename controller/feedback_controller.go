@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	config "Final-Project-JCC-Golang-2022/config"
 	model "Final-Project-JCC-Golang-2022/model"
 )
 
@@ -22,7 +23,7 @@ type FeedbackInput struct {
 // @Router /feedbacks/all [GET]
 func GetAllFeedbacks(c *gin.Context) {
 
-	db := connect()
+	db := config.Connect()
 	var response model.FeedbacksResponse
 	defer db.Close()
 
@@ -68,7 +69,7 @@ func GetAllFeedbacks(c *gin.Context) {
 // @Router /feedbacks [GET]
 func GetAllMyFeedbacks(c *gin.Context) {
 
-	db := connect()
+	db := config.Connect()
 	var response model.FeedbacksResponse
 	defer db.Close()
 
@@ -117,7 +118,7 @@ func GetAllMyFeedbacks(c *gin.Context) {
 // @Router /feedbacks [POST]
 func InsertMyFeedbacks(c *gin.Context) {
 
-	db := connect()
+	db := config.Connect()
 
 	var feedback model.Feedback
 	var response model.FeedbackResponse

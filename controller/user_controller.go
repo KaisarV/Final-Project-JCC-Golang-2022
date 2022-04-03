@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	config "Final-Project-JCC-Golang-2022/config"
 	gomail "Final-Project-JCC-Golang-2022/gomail"
 	model "Final-Project-JCC-Golang-2022/model"
 )
@@ -32,7 +33,7 @@ type InputLogin struct {
 // @Router /users [get]
 func GetAllUsers(c *gin.Context) {
 
-	db := connect()
+	db := config.Connect()
 	var response model.UsersResponse
 	defer db.Close()
 
@@ -84,7 +85,7 @@ func GetAllUsers(c *gin.Context) {
 // @Success 200 {object} model.ErrorResponse
 // @Router /user/{id} [delete]
 func DeleteUser(c *gin.Context) {
-	db := connect()
+	db := config.Connect()
 	defer db.Close()
 
 	var response model.ErrorResponse
@@ -134,7 +135,7 @@ func InsertUser(c *gin.Context) {
 		return
 	}
 
-	db := connect()
+	db := config.Connect()
 
 	var input InputUser
 
@@ -245,7 +246,7 @@ func InsertUser(c *gin.Context) {
 // @Success 200 {object} model.UserResponse
 // @Router /user [PUT]
 func UpdateMyProfile(c *gin.Context) {
-	db := connect()
+	db := config.Connect()
 
 	var user model.User
 	var response model.UserResponse
@@ -336,7 +337,7 @@ func UpdateMyProfile(c *gin.Context) {
 // @Success 200 {object} model.ErrorResponse
 // @Router /login [POST]
 func UserLogin(c *gin.Context) {
-	db := connect()
+	db := config.Connect()
 	defer db.Close()
 	var response model.ErrorResponse
 

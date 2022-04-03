@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	config "Final-Project-JCC-Golang-2022/config"
 	model "Final-Project-JCC-Golang-2022/model"
 )
 
@@ -23,7 +24,7 @@ type StoreInput struct {
 // @Router /stores [get]
 func GetAllStores(c *gin.Context) {
 
-	db := connect()
+	db := config.Connect()
 	var response model.StoresResponse
 	defer db.Close()
 
@@ -74,7 +75,7 @@ func GetAllStores(c *gin.Context) {
 // @Success 200 {object} model.ErrorResponse
 // @Router /store [delete]
 func DeleteMyStore(c *gin.Context) {
-	db := connect()
+	db := config.Connect()
 	defer db.Close()
 
 	var response model.ErrorResponse
@@ -115,7 +116,7 @@ func DeleteMyStore(c *gin.Context) {
 // @Router /store [POST]
 func InsertMyStore(c *gin.Context) {
 
-	db := connect()
+	db := config.Connect()
 
 	var store model.Store
 	var response model.StoreResponse
@@ -194,7 +195,7 @@ func InsertMyStore(c *gin.Context) {
 // @Success 200 {object} model.StoreResponse
 // @Router /store [PUT]
 func UpdateMyStore(c *gin.Context) {
-	db := connect()
+	db := config.Connect()
 
 	var store model.Store
 	var response model.StoreResponse
@@ -258,7 +259,7 @@ func UpdateMyStore(c *gin.Context) {
 }
 
 func getStoreId(c *gin.Context) int {
-	db := connect()
+	db := config.Connect()
 	_, userId, _, _ := validateTokenFromCookies(c)
 	rows, _ := db.Query("SELECT Id FROM stores WHERE User_Id = ?", userId)
 

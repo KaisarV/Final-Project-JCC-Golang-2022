@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	config "Final-Project-JCC-Golang-2022/config"
 	model "Final-Project-JCC-Golang-2022/model"
 )
 
@@ -24,7 +25,7 @@ type ProductReviewInput struct {
 // @Router /reviews [get]
 func GetAllMyProductReviews(c *gin.Context) {
 
-	db := connect()
+	db := config.Connect()
 	var response model.ProductReviewsResponse
 	defer db.Close()
 
@@ -72,7 +73,7 @@ func GetAllMyProductReviews(c *gin.Context) {
 // @Success 200 {object} model.ErrorResponse
 // @Router /review/{productid} [delete]
 func DeleteMyProductReview(c *gin.Context) {
-	db := connect()
+	db := config.Connect()
 	defer db.Close()
 
 	var response model.ErrorResponse
@@ -114,7 +115,7 @@ func DeleteMyProductReview(c *gin.Context) {
 // @Router /review/{productid} [POST]
 func InsertMyProductReview(c *gin.Context) {
 
-	db := connect()
+	db := config.Connect()
 
 	var review model.ProductReview
 	var response model.ProductReviewResponse
@@ -236,7 +237,7 @@ func InsertMyProductReview(c *gin.Context) {
 // @Success 200 {object} model.ProductReviewResponse
 // @Router /review/{productid} [PUT]
 func UpdateMyProductReview(c *gin.Context) {
-	db := connect()
+	db := config.Connect()
 
 	var review model.ProductReview
 	var response model.ProductReviewResponse

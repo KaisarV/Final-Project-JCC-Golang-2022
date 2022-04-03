@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	config "Final-Project-JCC-Golang-2022/config"
 	model "Final-Project-JCC-Golang-2022/model"
 )
 
@@ -23,7 +24,7 @@ type TransactionInput struct {
 // @Success 200 {object} model.TransactionsResponse
 // @Router /transactions [get]
 func GetAllMyTransactions(c *gin.Context) {
-	db := connect()
+	db := config.Connect()
 	var response model.TransactionsResponse
 	defer db.Close()
 	_, userId, _, _ := validateTokenFromCookies(c)
@@ -70,7 +71,7 @@ func GetAllMyTransactions(c *gin.Context) {
 // @Router /transaction [POST]
 func InsertMyTransactions(c *gin.Context) {
 
-	db := connect()
+	db := config.Connect()
 
 	var transaction model.Transaction
 	var response model.TransactionResponse

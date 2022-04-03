@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	config "Final-Project-JCC-Golang-2022/config"
 	model "Final-Project-JCC-Golang-2022/model"
 )
 
@@ -28,7 +29,7 @@ type CartUpdateInput struct {
 // @Router /cart [GET]
 func GetAllMyCart(c *gin.Context) {
 
-	db := connect()
+	db := config.Connect()
 	var response model.CartsResponse
 	defer db.Close()
 	_, userId, _, _ := validateTokenFromCookies(c)
@@ -75,7 +76,7 @@ func GetAllMyCart(c *gin.Context) {
 // @Success 200 {object} model.ErrorResponse
 // @Router /cart/{cartId} [delete]
 func DeleteMyCart(c *gin.Context) {
-	db := connect()
+	db := config.Connect()
 	defer db.Close()
 
 	var response model.ErrorResponse
@@ -115,7 +116,7 @@ func DeleteMyCart(c *gin.Context) {
 // @Router /cart [POST]
 func InsertMyCart(c *gin.Context) {
 
-	db := connect()
+	db := config.Connect()
 
 	var cart model.Cart
 	var response model.CartResponse
@@ -196,7 +197,7 @@ func InsertMyCart(c *gin.Context) {
 // @Success 200 {object} model.ErrorResponse
 // @Router /cart/{cartId} [PUT]
 func UpdateMyCart(c *gin.Context) {
-	db := connect()
+	db := config.Connect()
 
 	var cart model.Cart
 	var response model.ErrorResponse
