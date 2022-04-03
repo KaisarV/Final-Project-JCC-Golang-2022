@@ -9,7 +9,7 @@ import (
 	model "Final-Project-JCC-Golang-2022/model"
 
 	_ "github.com/go-sql-driver/mysql"
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -32,7 +32,7 @@ func Connect() *sql.DB {
 			panic(err)
 		}
 
-		db2, _ := gorm.Open(mysql.Open(psqlInfo), &gorm.Config{})
+		db2, _ := gorm.Open(postgres.Open(psqlInfo), &gorm.Config{})
 		db2.AutoMigrate(&model.User{}, &model.Transaction{}, &model.Store{}, &model.Cart{}, &model.Product{}, &model.ProductReview{}, &model.Feedback{})
 
 		return db
